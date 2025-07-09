@@ -215,10 +215,8 @@ public class TileManager : MonoBehaviour
             {
                 Vector3 spawnPosition = new Vector3((rowX * spacingToLoad - offset) + x,
                     -colY * spacingToLoad - offsetY + y, 0);
-                if (removeIndex != null && removeIndex.Contains(new Vector2Int(rowX, colY))) // ← đúng
+                if (removeIndex != null && removeIndex.Contains(new Vector2Int(rowX, colY))) 
                 {
-                    Debug.Log($"[REMOVE] Bỏ tile tại ({rowX}, {colY})");
-
                     continue;
                 }
 
@@ -226,7 +224,7 @@ public class TileManager : MonoBehaviour
                 tile.transform.SetParent(m_LayerParent[orderInLayer]);
 
                 tile.spriteFruit.sortingOrder = orderInLayer;
-                tile.background.sortingOrder = orderInLayer - 1;
+                tile.background.sortingOrder = orderInLayer ;
 
                 tile.row = rowX;
                 tile.col = colY;

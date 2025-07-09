@@ -118,7 +118,7 @@ public class PlayScreen : MonoBehaviour
    {
       homeScreen.gameObject.SetActive(true);
       this.gameObject.SetActive(false);
-      TileManager.Instance.gameObject.gameObject.SetActive(false);
+      TileManager.Instance.gameObject.SetActive(false);
       BoardTileCollector.Instance.gameObject.SetActive(false);
       CurrentLevel?.Invoke(TileManager.Instance.currentLevel);
       statusBar.DOAnchorPos(new Vector2(0, 85),0.6f).SetEase(Ease.OutCubic);
