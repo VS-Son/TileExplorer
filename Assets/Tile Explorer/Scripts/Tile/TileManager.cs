@@ -224,7 +224,7 @@ public class TileManager : MonoBehaviour
                 tile.transform.SetParent(m_LayerParent[orderInLayer]);
 
                 tile.spriteFruit.sortingOrder = orderInLayer;
-                tile.background.sortingOrder = orderInLayer ;
+                tile.background.sortingOrder = orderInLayer -1 ;
 
                 tile.row = rowX;
                 tile.col = colY;

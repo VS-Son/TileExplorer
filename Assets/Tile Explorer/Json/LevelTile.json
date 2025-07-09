@@ -59,7 +59,7 @@
           ]
         },
         {
-          "layerSort": 2,
+          "layerSort": 3,
           "posY": 0.3,
           "posX": 0.4,
           "rows": 6,
@@ -219,7 +219,7 @@
           ]
         },
         {
-          "layerSort": 2,
+          "layerSort": 3,
           "posY": 4,
           "posX": 0,
           "rows": 6,
@@ -347,7 +347,7 @@
           ]
         },
         {
-          "layerSort": 2,
+          "layerSort": 3,
           "posY": 2.8,
           "posX": 0,
           "rows": 6,
@@ -511,7 +511,7 @@
           ]
         },
         {
-          "layerSort": 2,
+          "layerSort": 3,
           "posY": 3.8,
           "posX": 0,
           "rows": 6,
