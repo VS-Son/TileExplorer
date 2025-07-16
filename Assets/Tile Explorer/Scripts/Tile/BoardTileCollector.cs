@@ -273,7 +273,7 @@ public class BoardTileCollector : MonoBehaviour
                     Debug.Log("win");
                     nextScreen.gameObject.SetActive(true);
                     TileManager.Instance.tileIndex = 0;
-                    
+                    nextScreen.ProgressionRewards();
                     completeLevel?.Invoke(TileManager.Instance.currentLevel);
                 }
                 else

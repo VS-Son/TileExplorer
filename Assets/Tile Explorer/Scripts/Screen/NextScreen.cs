@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;
 using Button = UnityEngine.UI.Button;
+using Slider = UnityEngine.UI.Slider;
 
 public class NextScreen : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class NextScreen : MonoBehaviour
    [SerializeField] private TMP_Text textNextLevel;
    [SerializeField] private PlayScreen gamePlay;
    [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle;
-   [SerializeField] private Slider _slider;
+   [SerializeField] private Slider slider;
    
    private int nextLevel;
 
@@ -68,4 +69,17 @@ public class NextScreen : MonoBehaviour
       this.gameObject.SetActive(false);
       TileManager.Instance.NextLevel();
    }
+
+   public void ProgressionRewards()
+   {
+      
+      var progression = slider.maxValue / 4;
+      if (slider.value.Equals(1))
+      {
+         slider.value = 0;
+      }
+      slider.value = Mathf.Min(slider.value + progression, slider.maxValue);
+      Debug.LogError(progression);
+      
+   }  
 }
