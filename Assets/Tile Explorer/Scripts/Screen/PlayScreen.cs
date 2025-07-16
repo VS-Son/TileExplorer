@@ -24,7 +24,7 @@ public class PlayScreen : MonoBehaviour
    public Image iconShuffle;
    [Header("Screen")]
    [SerializeField] private HomeScreen homeScreen;
-   [SerializeField] private SettingScreen settingScreen;
+   [SerializeField] private SettingsScreen settingsScreen;
    [Header("Text")]
    [SerializeField] private TMP_Text currentLevel;
    [SerializeField] private TMP_Text totalCoin;
@@ -47,7 +47,7 @@ public class PlayScreen : MonoBehaviour
 
    private void OnSetting()
    {
-      settingScreen.gameObject.SetActive(true);
+      settingsScreen.gameObject.SetActive(true);
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
 
    }

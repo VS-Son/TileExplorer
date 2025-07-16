@@ -5,21 +5,21 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 
-public class SettingScreen : MonoBehaviour
+public class SettingsScreen : MonoBehaviour
 {
   // [SerializeField] private GamePlaying gamePlaying;
    [SerializeField] private Button close;
-   [SerializeField] private Button musicToggle;
-   [SerializeField] private GameObject musicMute;
-   [SerializeField] private Button soundToggle;
-   [SerializeField] private GameObject soundMute;
+   [SerializeField] private Button buttonToggleMusic;
+   [SerializeField] private GameObject musicOn;
+   [SerializeField] private Button buttonSoundToggle;
+   [SerializeField] private GameObject soundOn;
 
 
    private void Start()
    {
       close.onClick.AddListener(OnClose);
-      musicToggle.onClick.AddListener(MusicOn);
-      soundToggle.onClick.AddListener(SoundOn);
+      buttonToggleMusic.onClick.AddListener(MusicOn);
+      buttonSoundToggle.onClick.AddListener(SoundOn);
    }
 
    private void OnClose()
@@ -31,14 +31,14 @@ public class SettingScreen : MonoBehaviour
    private void SoundOn()
    {
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-      if (!soundMute.gameObject.activeSelf)
+      if (!soundOn.gameObject.activeSelf)
       {
-         soundMute.gameObject.SetActive(true);
+         soundOn.gameObject.SetActive(true);
          AudioManager.Instance.ToggleMute(false, AudioType.Sfx);
       }
       else
       {
-         soundMute.gameObject.SetActive(false);
+         soundOn.gameObject.SetActive(false);
          AudioManager.Instance.ToggleMute(true, AudioType.Sfx); 
       }
       
@@ -47,14 +47,14 @@ public class SettingScreen : MonoBehaviour
    private void MusicOn()
    {
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-      if (!musicMute.gameObject.activeSelf)
+      if (!musicOn.gameObject.activeSelf)
       {
-         musicMute.gameObject.SetActive(true);
+         musicOn.gameObject.SetActive(true);
          AudioManager.Instance.ToggleMute(false, AudioType.Bgm);
       }
       else
       {
-         musicMute.gameObject.SetActive(false);
+         musicOn.gameObject.SetActive(false);
          AudioManager.Instance.ToggleMute(true, AudioType.Bgm); 
       }
    }

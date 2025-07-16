@@ -289,7 +289,7 @@ public class BoardTileCollector : MonoBehaviour
     
     private bool CheckTilesSelected()
     {
-        var layerGrids = TileManager.Instance.m_LayerGrids;
+        var layerGrids = TileManager.Instance.m_LayerTiles;
         int countLayer = 0;
         foreach (var grid in layerGrids.Values)
         {
@@ -313,7 +313,7 @@ public class BoardTileCollector : MonoBehaviour
     public bool IsLastMatchingTripleRemoved(FruitType fruitType)
     {
         int count = 0;
-        var layerGrids = TileManager.Instance.m_LayerGrids;
+        var layerGrids = TileManager.Instance.m_LayerTiles;
 
         foreach (var grid in layerGrids.Values)
         {

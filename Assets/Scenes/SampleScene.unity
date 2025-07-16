@@ -518,9 +518,9 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4751536801755643872, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
   m_PrefabInstance: {fileID: 7381417279741672872}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &144245719 stripped
+--- !u!114 &224720727 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3124169130652419910, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
+  m_CorrespondingSourceObject: {fileID: 5542392591780031783, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
   m_PrefabInstance: {fileID: 7381417279741672872}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -795,7 +795,7 @@ GameObject:
   - component: {fileID: 501613537}
   - component: {fileID: 501613536}
   m_Layer: 0
-  m_Name: SfxSuorce
+  m_Name: Sfx Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1062,7 +1062,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 55
+    m_Bits: 4294967295
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1116,7 +1116,7 @@ GameObject:
   - component: {fileID: 541074099}
   - component: {fileID: 541074098}
   m_Layer: 0
-  m_Name: SoundManager
+  m_Name: Sound Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1153,7 +1153,6 @@ Transform:
   m_Children:
   - {fileID: 621307860}
   - {fileID: 501613537}
-  - {fileID: 574071813}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &574071812
@@ -1167,7 +1166,7 @@ GameObject:
   - component: {fileID: 574071813}
   - component: {fileID: 574071814}
   m_Layer: 0
-  m_Name: Background
+  m_Name: Theme
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1182,11 +1181,11 @@ Transform:
   m_GameObject: {fileID: 574071812}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.38613105, y: -1.3361661, z: -4248.164}
-  m_LocalScale: {x: 0.66, y: 0.66, z: 0.66}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 541074099}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &574071814
 SpriteRenderer:
@@ -1229,7 +1228,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -3
-  m_Sprite: {fileID: 21300000, guid: 6a47670a3f2c7e048bebb622da605dea, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f46f6cac9d73a0440b94b6497b1e28ca, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1335,7 +1334,7 @@ GameObject:
   - component: {fileID: 621307860}
   - component: {fileID: 621307859}
   m_Layer: 0
-  m_Name: BgmSuorce
+  m_Name: Bgm Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1525,7 +1524,7 @@ Canvas:
   m_GameObject: {fileID: 780861058}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -2715,7 +2714,11 @@ PrefabInstance:
     - target: {fileID: 2431760356785374370, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
       propertyPath: settingScreen
       value: 
-      objectReference: {fileID: 144245719}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2431760356785374370, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
+      propertyPath: settingsScreen
+      value: 
+      objectReference: {fileID: 224720727}
     - target: {fileID: 2431760356785374370, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
       propertyPath: popupNotification
       value: 
@@ -2825,6 +2828,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3802370830251600539, guid: 5df4b36dae53da04eaef9d367c5f0a09, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802370830251600539, guid: 5df4b36dae53da04eaef9d367c5f0a09, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802370830251600539, guid: 5df4b36dae53da04eaef9d367c5f0a09, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4718780808738090904, guid: 5df4b36dae53da04eaef9d367c5f0a09, type: 3}
       propertyPath: m_Name
       value: Home Screen
@@ -2861,6 +2876,10 @@ PrefabInstance:
     - target: {fileID: 378623577074277839, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
       propertyPath: m_Name
       value: Setting screen
+      objectReference: {fileID: 0}
+    - target: {fileID: 378623577074277839, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4751536801755643872, guid: e2cf64ad17429fe41b8130431f78f729, type: 3}
       propertyPath: m_Pivot.x
@@ -2952,6 +2971,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
+  - {fileID: 574071813}
   - {fileID: 541074099}
   - {fileID: 314091588}
   - {fileID: 117686414}

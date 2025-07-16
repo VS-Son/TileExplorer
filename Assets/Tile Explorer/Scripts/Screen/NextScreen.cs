@@ -13,8 +13,10 @@ public class NextScreen : MonoBehaviour
    [SerializeField] private TMP_Text textCompleteLevel;
    [SerializeField] private TMP_Text textNextLevel;
    [SerializeField] private PlayScreen gamePlay;
+   [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle;
+   [SerializeField] private Slider _slider;
+   
    private int nextLevel;
-   [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle; 
 
    private void Start()
    {
@@ -42,12 +44,6 @@ public class NextScreen : MonoBehaviour
       if (nextLevel + 1 > 1)
       {
           lockedUndo.SetActive(false);
-          // var color = gamePlay.undo.image.color;
-          // color.a = 1;
-          // gamePlay.undo.image.color = color;
-          // var colorIcon = gamePlay.iconUndo.color;
-          // colorIcon.a = 1;
-          // gamePlay.iconUndo.color = colorIcon;
       }
       if (nextLevel + 1 > 2)
       {

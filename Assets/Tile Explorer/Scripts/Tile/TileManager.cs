@@ -26,7 +26,7 @@ public class TileManager : MonoBehaviour
 
     private List<FruitType> m_DistributedTiles;
 
-    public readonly Dictionary<int, Tile[,]> m_LayerGrids = new();
+    public readonly Dictionary<int, Tile[,]> m_LayerTiles = new();
 
     private readonly Dictionary<int, Transform> m_LayerParent = new();
 
@@ -116,8 +116,8 @@ public class TileManager : MonoBehaviour
                 var tileConfig = GenerateTile(config.rows, config.cols, config.posY, config.posX, config.tileNameLayer,
                     config.layerSort, config.removeTile
                     , maxLayer);
-                m_LayerGrids[config.layerSort] = tileConfig;
-                Debug.Log("layer Grid " + m_LayerGrids.Count);
+                m_LayerTiles[config.layerSort] = tileConfig;
+                Debug.Log("layer Grid " + m_LayerTiles.Count);
 
             }
         }
@@ -295,7 +295,7 @@ public class TileManager : MonoBehaviour
     {
         int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
 
-        foreach (var layer in m_LayerGrids)
+        foreach (var layer in m_LayerTiles)
         {
             int higherLayer = layer.Key;
             if (higherLayer <= tile.currentLayer) continue;
@@ -327,13 +327,13 @@ public class TileManager : MonoBehaviour
         List<Tile> remainingTiles = new List<Tile>();
         List<FruitType> remainingFruitTypes = new List<FruitType>();
 
-        foreach (var grid in m_LayerGrids.Values)
+        foreach (var layers in m_LayerTiles.Values)
         {
-            for (int row = 0; row < grid.GetLength(0); row++)
+            for (int row = 0; row < layers.GetLength(0); row++)
             {
-                for (int col = 0; col < grid.GetLength(1); col++)
+                for (int col = 0; col < layers.GetLength(1); col++)
                 {
-                    Tile tile = grid[row, col];
+                    Tile tile = layers[row, col];
                     if (tile != null && !tile.isSelected)
                     {
                         remainingTiles.Add(tile);
@@ -375,7 +375,7 @@ public class TileManager : MonoBehaviour
         }
 
         m_LayerParent.Clear();
-        m_LayerGrids.Clear();
+        m_LayerTiles.Clear();
         BoardTileCollector.Instance.ResetGame();
         GenerateTileManager();
 
@@ -394,7 +394,7 @@ public class TileManager : MonoBehaviour
         }
 
         m_LayerParent.Clear();
-        m_LayerGrids.Clear();
+        m_LayerTiles.Clear();
         BoardTileCollector.Instance.ResetGame();
         GenerateTileManager();
 
@@ -413,13 +413,13 @@ public class TileManager : MonoBehaviour
         {
             Dictionary<FruitType, List<Tile>> availableTiles = new();
 
-            foreach (var grid in m_LayerGrids.Values)
+            foreach (var layers in m_LayerTiles.Values)
             {
-                for (int row = 0; row < grid.GetLength(0); row++)
+                for (int row = 0; row < layers.GetLength(0); row++)
                 {
-                    for (int col = 0; col < grid.GetLength(1); col++)
+                    for (int col = 0; col < layers.GetLength(1); col++)
                     {
-                        Tile tile = grid[row, col];
+                        Tile tile = layers[row, col];
                         if (tile != null && !tile.isSelected)
                         {
                             if (!availableTiles.ContainsKey(tile.fruitType))
@@ -461,13 +461,13 @@ public class TileManager : MonoBehaviour
     {
         List<Tile> result = new List<Tile>();
 
-        foreach (var grid in m_LayerGrids.Values)
+        foreach (var layers in m_LayerTiles.Values)
         {
-            for (int row = 0; row < grid.GetLength(0); row++)
+            for (int row = 0; row < layers.GetLength(0); row++)
             {
-                for (int col = 0; col < grid.GetLength(1); col++)
+                for (int col = 0; col < layers.GetLength(1); col++)
                 {
-                    Tile tile = grid[row, col];
+                    Tile tile = layers[row, col];
                     if (tile != null && !tile.isSelected && tile.fruitType == fruitType)
                     {
                         result.Add(tile);
