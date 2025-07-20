@@ -13,15 +13,58 @@ public class HomeScreen : MonoBehaviour
     [SerializeField] private TMPro.TMP_Text textCurrentLevel;
     [SerializeField] private GameObject tileManager;
     [SerializeField] private GameObject tileCollector;
+    [SerializeField] private Button setting;
+    [SerializeField] private SettingsScreen settingsScreen;
+    [SerializeField] private List<RectTransform> tileEffect = new List<RectTransform>();
+    [SerializeField] private Image bannerExplorer;
     private int currentLevel = 1;
     private void Start()
     {
-        starGame.onClick.AddListener((() => ButtonStart()));
-//        textCurrentLevel.text = "Level " + TileManager.Instance.currentLevel;
+        starGame.onClick.AddListener((OnStart));
+        setting.onClick.AddListener(OnSettings);
 
+        foreach (var tileIndex in tileEffect)
+        {
+            tileIndex.transform.localScale = new Vector3(0, 0);
+        }
+    
+        StartCoroutine(ScaleTilesSequentially());
     }
 
-    private void ButtonStart()
+    IEnumerator ScaleTilesSequentially(int index = 0)
+    {
+        if (index >= tileEffect.Count)
+        {
+            StartCoroutine(OnBanner());
+            yield break;
+        }
+
+        var tile = tileEffect[index];
+        tile.DOScale(new Vector3(1.23f, 1.23f), 0.1f)
+            .OnComplete(() => { StartCoroutine(ScaleTilesSequentially(index + 1)); });
+
+        yield return null;
+    }
+
+    IEnumerator OnBanner()
+    {
+        var duration = 0.005f;
+        while (bannerExplorer.fillAmount < 1f)
+        {
+            bannerExplorer.fillAmount += 0.01f;
+            float clampedTime = Mathf.Clamp01(bannerExplorer.fillAmount);
+            bannerExplorer.fillAmount = clampedTime;
+            yield return new WaitForSeconds(duration);
+        }
+        //starGame.transform.DOScale(1, 0.4f);
+    }
+
+    private void OnSettings()
+    {
+        settingsScreen.gameObject.SetActive(true);
+    }
+
+    private void OnStart()
     {
         gamePlay.ShowStatusBar(currentLevel);
         tileManager.gameObject.SetActive(true);

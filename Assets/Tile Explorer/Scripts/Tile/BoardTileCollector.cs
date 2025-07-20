@@ -72,6 +72,27 @@ public class BoardTileCollector : MonoBehaviour
             colorIcon.a = 1;
             playScreen.iconUndo.color = colorIcon;
         }
+
+        // if (collectedTiles.Count > 7)
+        // {
+        //     var layerGrids = TileManager.Instance.m_LayerTiles;
+        //     foreach (var grid in layerGrids.Values)
+        //     {
+        //         for (int row = 0; row < grid.GetLength(0); row++)
+        //         {
+        //             for (int col = 0; col < grid.GetLength(1); col++)
+        //             {
+        //                 Tile tileActive = grid[row, col];
+        //                 if (tileActive!=null)
+        //                 {
+        //                     tileActive.collider2d.enabled = false;
+        //
+        //                 }
+        //             }
+        //         }
+        //     }
+        //
+        // }
         SetSameFruits(tile);
         
         
@@ -225,21 +246,19 @@ public class BoardTileCollector : MonoBehaviour
 
 
 
-    
+
 
     IEnumerator ScaleMatchingTiles(List<Tile> sameFruitTiles)
     {
         foreach (var tile in sameFruitTiles)
         {
             yield return tile.transform.DOScale(tile.transform.localScale + new Vector3(0.2f, 0.2f), 0.05f)
-                .SetEase(Ease.OutBack).OnComplete((() => { 
-                    tile.transform.DOScale(0.001f, 0.1f);      
-                }))
+                .SetEase(Ease.OutBack).OnComplete((() => { tile.transform.DOScale(0.001f, 0.1f); }))
                 .WaitForCompletion();
             yield return new WaitForSeconds(0.01f);
 
         }
-       
+
 
         count++;
         AudioManager.Instance.PlaySfx("destroy");
@@ -252,8 +271,6 @@ public class BoardTileCollector : MonoBehaviour
             Destroy(tile.gameObject);
         }
 
-        countProcessing--;
-        isProcessing = false;
         if (collectedTiles.Count == 0 && TileManager.Instance.currentLevel > 1)
         {
             var color = playScreen.undo.image.color;
@@ -263,17 +280,22 @@ public class BoardTileCollector : MonoBehaviour
             colorIcon.a = 0.3f;
             playScreen.iconUndo.color = colorIcon;
         }
+
         ReArrangeTileObjects();
+        isProcessing = false;
         DOVirtual.DelayedCall(0.4f, () =>
         {
-            if (CheckTilesSelected()&& countProcessing == 0)
+            countProcessing--;
+            if (CheckTilesSelected() && countProcessing == 0 && !isProcessing)
             {
                 if (TileManager.Instance.HasNextLevel())
                 {
                     Debug.Log("win");
+                    gameObject.SetActive(false);
+                    playScreen.gameObject.SetActive(false);
                     nextScreen.gameObject.SetActive(true);
-                    TileManager.Instance.tileIndex = 0;
                     nextScreen.ProgressionRewards();
+                    TileManager.Instance.tileIndex = 0;
                     completeLevel?.Invoke(TileManager.Instance.currentLevel);
                 }
                 else
@@ -286,7 +308,8 @@ public class BoardTileCollector : MonoBehaviour
         });
 
     }
-    
+
+
     private bool CheckTilesSelected()
     {
         var layerGrids = TileManager.Instance.m_LayerTiles;
@@ -310,31 +333,7 @@ public class BoardTileCollector : MonoBehaviour
         return true;
         
     }
-    public bool IsLastMatchingTripleRemoved(FruitType fruitType)
-    {
-        int count = 0;
-        var layerGrids = TileManager.Instance.m_LayerTiles;
-
-        foreach (var grid in layerGrids.Values)
-        {
-            for (int row = 0; row < grid.GetLength(0); row++)
-            {
-                for (int col = 0; col < grid.GetLength(1); col++)
-                {
-                    Tile tile = grid[row, col];
-                    if (tile != null && !tile.isSelected && tile.fruitType == fruitType)
-                    {
-                        count++;
-                    }
-                }
-            }
-        }
-
-        // Nếu còn dưới 3 tile giống nhau => đã gom hết nhóm cuối
-        return count < 3;
-    }
-
-
+    
     public void ResetGame()
     {
         foreach (var tileObject in collectedTiles)
@@ -370,19 +369,11 @@ public class BoardTileCollector : MonoBehaviour
                 }
                 Debug.Log("Undo");
             }));
-            // if (originalTile.Count == 0)
-            // {
-            //     var color = gamePlaying.undo.image.color;
-            //     color.a = 0.3f;
-            //     gamePlaying.undo.image.color = color;
-            //     var colorIcon = gamePlaying.iconUndo.color;
-            //     colorIcon.a = 0.3f;
-            //     gamePlaying.iconUndo.color = colorIcon;
-            // }
             tile.currentLayer = tile.originalLayer;
             tile.spriteFruit.sortingOrder = tile.originalLayer;
             tile.background.sortingOrder = tile.originalLayer - 1;
             tile.isSelected = false;
+            tile.collider2d.enabled = true;
             tile.transform.SetParent(null);
             tile.collider2d.enabled = true;
             TileManager.Instance.SetLayer(tile, tile.originalLayer);

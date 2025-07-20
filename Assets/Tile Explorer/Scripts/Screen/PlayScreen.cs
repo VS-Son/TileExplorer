@@ -6,7 +6,6 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.Events;
-using DG.Tweening;
 public class PlayScreen : MonoBehaviour
 {
    public static event Action<int> CurrentLevel;
@@ -34,14 +33,14 @@ public class PlayScreen : MonoBehaviour
    [SerializeField] private RectTransform popupNotification;
    [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle;
    
-   private Tween moveTween, fadeTween1,fadeTween2, scaleTween1, scaleTween2;
+   private Tween _moveTween, _fadeTween1,_fadeTween2, _scaleTween1, _scaleTween2;
 
    private void Start()
    {
-      home.onClick.AddListener((() => OnHome()));
+      home.onClick.AddListener((OnHome));
       undo.onClick.AddListener(OnUndo);
       magicWand.onClick.AddListener(MagicWand);
-      shuffle.onClick.AddListener((() => OnShuffle()));
+      shuffle.onClick.AddListener((OnShuffle));
       setting.onClick.AddListener(OnSetting);
    }
 
@@ -49,7 +48,6 @@ public class PlayScreen : MonoBehaviour
    {
       settingsScreen.gameObject.SetActive(true);
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-
    }
    private void MagicWand()
    {
@@ -63,7 +61,6 @@ public class PlayScreen : MonoBehaviour
          ShowPopupRequirement(4, NotificationType.Level );
       }
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-
    }
 
    private void OnUndo()
@@ -130,11 +127,11 @@ public class PlayScreen : MonoBehaviour
 
    private void ShowPopupRequirement(int level, NotificationType notificationType)
    {
-      moveTween?.Kill();
-      fadeTween1?.Kill();
-      fadeTween2?.Kill();
-      scaleTween1?.Kill();
-      scaleTween2?.Kill();
+      _moveTween?.Kill();
+      _fadeTween1?.Kill();
+      _fadeTween2?.Kill();
+      _scaleTween1?.Kill();
+      _scaleTween2?.Kill();
 
       popupNotification.anchoredPosition = new Vector2(0, 0);
       var color = popupNotification.GetComponent<Image>().color;
@@ -147,16 +144,16 @@ public class PlayScreen : MonoBehaviour
 
       popupNotification.gameObject.SetActive(true);
 
-      scaleTween1 = popupNotification.transform.DOScale(popupNotification.transform.localScale + new Vector3(0.2f, 0.2f), 0.2f).OnComplete(() =>
+      _scaleTween1 = popupNotification.transform.DOScale(popupNotification.transform.localScale + new Vector3(0.2f, 0.2f), 0.2f).OnComplete(() =>
       {
-         scaleTween2 = popupNotification.transform.DOScale(1f, 0.2f).OnComplete(() =>
+         _scaleTween2 = popupNotification.transform.DOScale(1f, 0.2f).OnComplete(() =>
          {
             DOVirtual.DelayedCall(1f, () =>
             {
-               fadeTween1 = popupNotification.GetComponent<Image>().DOFade(0f, 0.2f);
-               fadeTween2 = content.DOFade(0f, 0.2f);
+               _fadeTween1 = popupNotification.GetComponent<Image>().DOFade(0f, 0.2f);
+               _fadeTween2 = content.DOFade(0f, 0.2f);
 
-               moveTween = popupNotification.DOAnchorPosY(400f, 0.4f).OnComplete(() =>
+               _moveTween = popupNotification.DOAnchorPosY(400f, 0.4f).OnComplete(() =>
                {
                   popupNotification.gameObject.SetActive(false);
                });
@@ -174,17 +171,11 @@ public class PlayScreen : MonoBehaviour
             break;
       }
    }
-
-
+   
    public void ShowStatusBar(int level)
    {
       gameObject.SetActive(true);
       statusBar.DOAnchorPos(new Vector2(0, -85),0.6f).SetEase(Ease.OutCubic);
       currentLevel.text = "Level " + level;
-   }
-
-   public void CountTile(int count)
-   {
-      totalCoin.text = "tile "+count;
    }
 }

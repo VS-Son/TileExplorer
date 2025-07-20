@@ -30,7 +30,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             _isShaking = true;
             transform.DOShakePosition(
                 duration: 0.3f,
-                strength: new Vector3(0.3f, 0f, 0f),
+                strength: new Vector3(0.1f, 0f, 0f),
                 vibrato: 10,
                 randomness: 0f, 
                 snapping: false,
