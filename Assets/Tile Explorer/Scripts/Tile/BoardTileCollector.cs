@@ -72,27 +72,7 @@ public class BoardTileCollector : MonoBehaviour
             colorIcon.a = 1;
             playScreen.iconUndo.color = colorIcon;
         }
-
-        // if (collectedTiles.Count > 7)
-        // {
-        //     var layerGrids = TileManager.Instance.m_LayerTiles;
-        //     foreach (var grid in layerGrids.Values)
-        //     {
-        //         for (int row = 0; row < grid.GetLength(0); row++)
-        //         {
-        //             for (int col = 0; col < grid.GetLength(1); col++)
-        //             {
-        //                 Tile tileActive = grid[row, col];
-        //                 if (tileActive!=null)
-        //                 {
-        //                     tileActive.collider2d.enabled = false;
-        //
-        //                 }
-        //             }
-        //         }
-        //     }
-        //
-        // }
+        
         SetSameFruits(tile);
         
         
@@ -294,6 +274,9 @@ public class BoardTileCollector : MonoBehaviour
                     gameObject.SetActive(false);
                     playScreen.gameObject.SetActive(false);
                     nextScreen.gameObject.SetActive(true);
+                    StatusBar.Instance.home.gameObject.SetActive(false);
+                    StatusBar.Instance.textLevel.gameObject.SetActive(false);
+
                     nextScreen.ProgressionRewards();
                     TileManager.Instance.tileIndex = 0;
                     completeLevel?.Invoke(TileManager.Instance.currentLevel);

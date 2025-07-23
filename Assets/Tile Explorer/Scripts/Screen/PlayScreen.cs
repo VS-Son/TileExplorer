@@ -37,11 +37,9 @@ public class PlayScreen : MonoBehaviour
 
    private void Start()
    {
-      home.onClick.AddListener((OnHome));
       undo.onClick.AddListener(OnUndo);
       magicWand.onClick.AddListener(MagicWand);
       shuffle.onClick.AddListener((OnShuffle));
-      setting.onClick.AddListener(OnSetting);
    }
 
    private void OnSetting()
@@ -172,10 +170,4 @@ public class PlayScreen : MonoBehaviour
       }
    }
    
-   public void ShowStatusBar(int level)
-   {
-      gameObject.SetActive(true);
-      statusBar.DOAnchorPos(new Vector2(0, -85),0.6f).SetEase(Ease.OutCubic);
-      currentLevel.text = "Level " + level;
-   }
 }

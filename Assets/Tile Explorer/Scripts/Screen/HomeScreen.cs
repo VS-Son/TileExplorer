@@ -9,26 +9,25 @@ using DG.Tweening;
 public class HomeScreen : MonoBehaviour
 {
     [SerializeField] private PlayScreen gamePlay;
-    [SerializeField] private Button starGame;
+    [SerializeField] private Button onStart;
     [SerializeField] private TMPro.TMP_Text textCurrentLevel;
     [SerializeField] private GameObject tileManager;
     [SerializeField] private GameObject tileCollector;
-    [SerializeField] private Button setting;
     [SerializeField] private SettingsScreen settingsScreen;
     [SerializeField] private List<RectTransform> tileEffect = new List<RectTransform>();
     [SerializeField] private Image bannerExplorer;
     private int currentLevel = 1;
     private void Start()
     {
-        starGame.onClick.AddListener((OnStart));
-        setting.onClick.AddListener(OnSettings);
-
+        onStart.onClick.AddListener((OnStart));
         foreach (var tileIndex in tileEffect)
         {
             tileIndex.transform.localScale = new Vector3(0, 0);
         }
-    
+        onStart.transform.localScale = Vector3.zero;
+
         StartCoroutine(ScaleTilesSequentially());
+        StatusBar.Instance.home.gameObject.SetActive(false);
     }
 
     IEnumerator ScaleTilesSequentially(int index = 0)
@@ -40,7 +39,7 @@ public class HomeScreen : MonoBehaviour
         }
 
         var tile = tileEffect[index];
-        tile.DOScale(new Vector3(1.23f, 1.23f), 0.1f)
+        tile.DOScale(new Vector3(1.23f, 1.23f), 0.5f)
             .OnComplete(() => { StartCoroutine(ScaleTilesSequentially(index + 1)); });
 
         yield return null;
@@ -56,17 +55,13 @@ public class HomeScreen : MonoBehaviour
             bannerExplorer.fillAmount = clampedTime;
             yield return new WaitForSeconds(duration);
         }
-        //starGame.transform.DOScale(1, 0.4f);
+        onStart.transform.DOScale(1, 0.4f);
     }
-
-    private void OnSettings()
-    {
-        settingsScreen.gameObject.SetActive(true);
-    }
-
     private void OnStart()
     {
-        gamePlay.ShowStatusBar(currentLevel);
+       StatusBar.Instance.statusCoin.SetActive(true);
+      StatusBar.Instance.textLevel.gameObject.SetActive(true);
+      StatusBar.Instance.textLevel.text = "Level" + currentLevel;
         tileManager.gameObject.SetActive(true);
         tileCollector.gameObject.SetActive(true);
         this.gameObject.SetActive(false);
@@ -76,15 +71,16 @@ public class HomeScreen : MonoBehaviour
 
         });
         AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
+        StatusBar.Instance.home.gameObject.SetActive(true);
     }
 
     private void OnEnable()
     {
-        PlayScreen.CurrentLevel += CurrentLevel;
+        StatusBar.CurrentLevel += CurrentLevel;
     }
     private void OnDisable()
     {
-        PlayScreen.CurrentLevel -= CurrentLevel;
+        StatusBar.CurrentLevel -= CurrentLevel;
     }
    
     private void CurrentLevel(int level)
