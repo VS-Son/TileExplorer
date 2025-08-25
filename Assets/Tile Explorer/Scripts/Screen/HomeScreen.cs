@@ -39,7 +39,7 @@ public class HomeScreen : MonoBehaviour
         }
 
         var tile = tileEffect[index];
-        tile.DOScale(new Vector3(1.23f, 1.23f), 0.5f)
+        tile.DOScale(new Vector3(1.23f, 1.23f), 0.25f)
             .OnComplete(() => { StartCoroutine(ScaleTilesSequentially(index + 1)); });
 
         yield return null;

@@ -11,7 +11,7 @@ public class TileObject : MonoBehaviour
 
     public FruitType fruitType;
     public bool isLocked;
-    //public TileData Data;
+    //public TileData MyData;
     public Action<TileObject> OnPicked;
     public TileLayerData layerData;
     // public void SetFruit(FruitType type)
@@ -23,7 +23,7 @@ public class TileObject : MonoBehaviour
 
     // public void SetData(TileData tileData)
     // {
-    //     Data = tileData;
+    //     MyData = tileData;
     // }
 
     // public void OnPointerClick(PointerEventData eventData)

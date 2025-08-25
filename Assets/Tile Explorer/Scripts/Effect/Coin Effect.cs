@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 using TMPro;
-using UnityEditor.Timeline.Actions;
-
 public class CoinEffect : MonoBehaviour
 {
    public static event Action onCompleteGoal;
@@ -18,11 +16,11 @@ public class CoinEffect : MonoBehaviour
    private int _currentScore = 0;
    public float moveDuration = 0.6f;       
    public float parabolaHeight = 100f;
-   public TMP_Text currentCoin;
-   private int currentScore = 0;
+   public TMP_Text textCurrentCoin;
+   private int currentCoin = 0;
    private int goalScore;
 
-   public void RewardPlayer(int rewardPoint)
+   public void RewardCoin(int rewardPoint)
    {
       int coinCount = rewardPoint / pointPerCoin;
       goalScore = rewardPoint;
@@ -59,13 +57,13 @@ public class CoinEffect : MonoBehaviour
 
       Destroy(coin);
       
-      StartCoroutine(AddScoreAnimated(pointPerCoin));  // gọi hiệu ứng cộng điểm
+      StartCoroutine(AddScoreAnimated(pointPerCoin));
 
    }
    IEnumerator AddScoreAnimated(int addAmount)
    {
-      int startScore = currentScore;
-      int targetScore = currentScore + addAmount;
+      int startScore = currentCoin;
+      int targetScore = currentCoin + addAmount;
       float duration = 0.001f;
       float elapsed = 0f;
 
@@ -73,14 +71,14 @@ public class CoinEffect : MonoBehaviour
       {
          elapsed += Time.deltaTime;
          float t = elapsed / duration;
-         currentScore = Mathf.RoundToInt(Mathf.Lerp(startScore, targetScore, t));
-        // currentCoin.text = currentScore.ToString();
+         currentCoin = Mathf.RoundToInt(Mathf.Lerp(startScore, targetScore, t));
+        // textCurrentCoin.text = textCurrentCoin.ToString();
          yield return null;
       }
 
-      currentScore = targetScore;
-      currentCoin.text = currentScore.ToString();
-      if (currentScore >= goalScore)
+      currentCoin = targetScore;
+      textCurrentCoin.text = currentCoin.ToString();
+      if (currentCoin >= goalScore)
       {
          onCompleteGoal?.Invoke();
       }

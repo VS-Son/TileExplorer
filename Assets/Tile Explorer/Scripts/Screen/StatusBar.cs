@@ -12,10 +12,12 @@ public class StatusBar : MonoBehaviour
     public int currentCoin;
     public Button home;
     public Button setting;
+    public Button shop;
     public TMP_Text scoreCoin;
     public SettingsScreen settingsScreen;
     public HomeScreen homeScreen;
     public PlayScreen playScreen;
+    public ShopScroller shopScreen;
     public GameObject statusCoin;
     public TMP_Text textLevel;
     private void Awake()
@@ -27,16 +29,21 @@ public class StatusBar : MonoBehaviour
     {
         home.onClick.AddListener((OnHome));
         setting.onClick.AddListener((OnSetting));
+        shop.onClick.AddListener(OnShop);
 
     }
 
+    private void OnShop()
+    {
+        shopScreen.gameObject.SetActive(true);
+    }
     private void OnHome()
     {
         homeScreen.gameObject.SetActive(true);
         TileManager.Instance.gameObject.SetActive(false);
         home.gameObject.SetActive(false);
         textLevel.gameObject.SetActive(false);
-        statusCoin.SetActive(false);
+       // statusCoin.SetActive(false);
         playScreen.gameObject.SetActive(false);
         BoardTileCollector.Instance.gameObject.SetActive(false);
         CurrentLevel?.Invoke(TileManager.Instance.currentLevel);

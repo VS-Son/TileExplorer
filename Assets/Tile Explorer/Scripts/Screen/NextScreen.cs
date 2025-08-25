@@ -37,7 +37,7 @@ public class NextScreen : MonoBehaviour
 
    [Header("Status bar")] [SerializeField]
    private int scoreQuantity = 30;
-   private int _countProgression = 2;
+   private int _countProgression = 3;
    private int _nextLevel;
 
    private void Start()
@@ -156,7 +156,7 @@ public class NextScreen : MonoBehaviour
 
       while (elapsed < duration)
       {
-        iconRewards.transform.DOScale(1.5f, duration);
+         iconRewards.transform.DOScale(1.5f, duration);
          elapsed += Time.deltaTime;
          var t = Mathf.Clamp01(elapsed / duration);
          var pos = Vector2.Lerp(iconRewards.transform.position, new Vector2(-540, 15), t);
@@ -183,7 +183,7 @@ public class NextScreen : MonoBehaviour
       DOVirtual.DelayedCall(0.5f, (() =>
       {
          effectCoin.gameObject.SetActive(false);
-         FindObjectOfType<CoinEffect>().RewardPlayer(scoreQuantity);
+         FindObjectOfType<CoinEffect>().RewardCoin(scoreQuantity);
 
       }));
    }
