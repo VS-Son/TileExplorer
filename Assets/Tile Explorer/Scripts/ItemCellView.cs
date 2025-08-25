@@ -25,11 +25,11 @@ public class ItemCellView : EnhancedScrollerCellView
     public GameObject coinPackSection;
     public TMP_Text coinPackAmountText;
     
-    private DataBase _current;
+    private IDataBase _current;
     
-    public System.Action<DataBase> onPurchase;
+    public System.Action<IDataBase> onPurchase;
     
-    public void SetData(DataBase data)
+    public void SetData(IDataBase data)
     {
         // Lưu trữ data hiện tại
         _current = data;

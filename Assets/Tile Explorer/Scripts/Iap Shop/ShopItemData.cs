@@ -5,50 +5,50 @@ using System;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine.Serialization;
 
-public enum ShopTypeItem
-{
-    Bundle,
-    RemoveAds,
-    Coin , 
-}
 [Serializable]
-public class BundleItemData:DataBase
+public class BundleItemData:IDataBase
 {
     public string title;
-    public int id;
+    public string id;
     public int price;
-    public int saleOff; 
+    public bool isPurchase;
+    public int saleOff;
+    public Sprite icon;
     public int coin;
     public int undo;
     public int magicWand;
     public int shuffle;
     
-    public int itemId => id;
+    public string Id => id;
+    public bool IsPurchase => isPurchase;
     public ShopTypeItem itemType => ShopTypeItem.Bundle;
 }
 
 [Serializable]
-public class RemoveAdsData:DataBase
+public class RemoveAdsData:IDataBase
 {
-    public int id;
+    public string id;
     public string title;  
     public int price;
+    public bool isPurchase;
 
-    public int itemId => id;
+    public string Id => id;
+    public bool IsPurchase => isPurchase;
     public ShopTypeItem itemType => ShopTypeItem.RemoveAds;
    
 }
 
 [Serializable]
-public class CoinPackData:DataBase
+public class CoinPackData:IDataBase
 {
-    public int id;
+    public string id;
     public int coin;
     public Sprite icon;
     public int price;
+    public bool isPurchase;
 
-    public int itemId => id;
-    public ShopTypeItem itemType => ShopTypeItem.Coin;
+    public string Id => id;
+    public bool IsPurchase => isPurchase;    public ShopTypeItem itemType => ShopTypeItem.Coin;
     
 }
 
@@ -60,9 +60,9 @@ public class ShopItemData : ScriptableObject
    public List<RemoveAdsData> removeAdsData;
    public List<CoinPackData> coinPackData;
    
-   public List<DataBase> GetAllItems()
+   public List<IDataBase> GetAllItems()
    {
-       List<DataBase> allItems = new List<DataBase>();
+       List<IDataBase> allItems = new List<IDataBase>();
        allItems.AddRange(bundleData);
        allItems.AddRange(removeAdsData);
        allItems.AddRange(coinPackData);

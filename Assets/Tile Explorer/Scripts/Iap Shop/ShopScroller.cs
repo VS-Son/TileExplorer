@@ -2,6 +2,7 @@ using System;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.Serialization;
 
 public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
@@ -13,11 +14,13 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
     [FormerlySerializedAs("shopDatabase")] [Header("Shop Data")]
     public ShopItemData shopDataConfig;
     private Dictionary<ShopTypeItem, EnhancedScrollerCellView> _prefabDict = new Dictionary<ShopTypeItem, EnhancedScrollerCellView>();
-    private List<DataBase> _allItems = new List<DataBase>();
+    private List<IDataBase> _allItems = new List<IDataBase>();
+    
 
     void Start()
     {
         InitializeShop();
+        UpdatePurchased();
     }
 
     private void InitializeShop()
@@ -30,10 +33,8 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
                 _prefabDict[config.type] = config.prefab;
             }
         }
-        _allItems = new List<DataBase>();
-        _allItems.AddRange(shopDataConfig.bundleData);
-        _allItems.AddRange(shopDataConfig.removeAdsData);
-        _allItems.AddRange(shopDataConfig.coinPackData);
+
+        _allItems = shopDataConfig.GetAllItems();
         scroller.ReloadData();
     }
     
@@ -48,7 +49,7 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         if (dataIndex < 0 || dataIndex >= _allItems.Count)
             return 200f;
 
-        DataBase item = _allItems[dataIndex];
+        IDataBase item = _allItems[dataIndex];
         
         switch (item.itemType)
         {
@@ -68,7 +69,7 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         if (dataIndex < 0 || dataIndex >= _allItems.Count)
             return null;
 
-        DataBase item = _allItems[dataIndex];
+        IDataBase item = _allItems[dataIndex];
         EnhancedScrollerCellView cellView = null;
         if (!_prefabDict.TryGetValue(item.itemType, out var prefab))
         {
@@ -79,10 +80,42 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         if (cellView is IShopCellView dataHandler)
         {
             dataHandler.SetData(item, dataIndex);
+            dataHandler.onClick = null;
+            dataHandler.onClick += OnClick;
         }
 
         return cellView;
         
     }
-    
+
+    private void OnClick(IShopCellView cellView)
+    {
+        switch (cellView)
+        {
+            case BundleCellView bundleCellView:
+                bundleCellView.OnPurchase(bundleCellView.data);
+                break;
+            case CoinPackCellView coinPackCellView:
+                Debug.Log(coinPackCellView.data);
+                coinPackCellView.OnPurchase(coinPackCellView.data);
+                break;
+            case RemoveAdsCellView removeAdsCellView:
+                Debug.Log(removeAdsCellView.data);
+                removeAdsCellView.OnPurchase(removeAdsCellView.data);
+                break;
+        
+        }
+     
+        UpdatePurchased();
+    }
+
+    private void UpdatePurchased()
+    {
+        
+        var notPurchase = _allItems.Where(item => !(item.IsPurchase)).ToList();
+        var purchased = _allItems.Where(item => item.IsPurchase).ToList();
+        _allItems = notPurchase.Concat(purchased).ToList();
+        scroller.ReloadData();
+        
+    }
 }

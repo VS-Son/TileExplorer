@@ -1,11 +1,22 @@
-public interface DataBase
+using System;
+public enum ShopTypeItem
 {
-  int itemId { get; }
+  Bundle,
+  RemoveAds,
+  Coin , 
+}
+public interface IDataBase
+{
+  string Id { get; }
+  bool IsPurchase { get; }
   ShopTypeItem itemType { get; }
   
 }
 public interface IShopCellView
 {
-  public void SetData(DataBase data, int index);
+  Action<IShopCellView> onClick { get; set; }
+  public void SetData(IDataBase data, int index);
+  public void OnClick();
+  public void OnPurchase(IDataBase data);
 }
 

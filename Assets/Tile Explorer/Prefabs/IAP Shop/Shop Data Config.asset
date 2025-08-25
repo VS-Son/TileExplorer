@@ -13,93 +13,79 @@ MonoBehaviour:
   m_Name: Shop Data Config
   m_EditorClassIdentifier: 
   bundleData:
-  - title: 
-    id: 0
-    currency: 
-    price: 0
-    saleOff: 0
-    quantityCoin: 0
-    quantityUndo: 0
-    quantityMagicWand: 0
-    quantityShuffle: 0
-  - title: 
-    id: 0
-    currency: 
-    price: 0
+  - title: Super
+    id: Super
+    price: 75000
+    isPurchase: 1
     saleOff: 50
-    quantityCoin: 0
-    quantityUndo: 0
-    quantityMagicWand: 0
-    quantityShuffle: 0
-  - title: 
-    id: 0
-    currency: 
-    price: 0
-    saleOff: 0
-    quantityCoin: 0
-    quantityUndo: 0
-    quantityMagicWand: 0
-    quantityShuffle: 0
-  - title: 
-    id: 0
-    currency: 
-    price: 0
-    saleOff: 0
-    quantityCoin: 0
-    quantityUndo: 0
-    quantityMagicWand: 0
-    quantityShuffle: 0
-  - title: 
-    id: 0
-    currency: 
-    price: 0
-    saleOff: 0
-    quantityCoin: 0
-    quantityUndo: 0
-    quantityMagicWand: 0
-    quantityShuffle: 0
+    icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
+    coin: 1200
+    undo: 3
+    magicWand: 3
+    shuffle: 3
+  - title: Mega
+    id: Mega
+    price: 156000
+    isPurchase: 0
+    saleOff: 60
+    icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
+    coin: 3000
+    undo: 6
+    magicWand: 6
+    shuffle: 6
+  - title: Brilliance
+    id: Brilliance
+    price: 311000
+    isPurchase: 0
+    saleOff: 70
+    icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
+    coin: 6800
+    undo: 12
+    magicWand: 12
+    shuffle: 12
+  - title: Ultimate
+    id: Ultimate
+    price: 733000
+    isPurchase: 0
+    saleOff: 80
+    icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
+    coin: 15000
+    undo: 25
+    magicWand: 25
+    shuffle: 25
   removeAdsData:
-  - id: 0
-    title: 
-    price: 0
+  - id: Remove_Ads
+    title: Remove ADS
+    price: 132000
+    isPurchase: 1
   coinPackData:
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
-  - id: 0
-    quantityCoin: 0
-    icon: {fileID: 21300000, guid: 334d7198171829e409d7c1d52db6a729, type: 3}
-    price: 0
+  - id: Coin_Pack_1
+    coin: 240
+    icon: {fileID: 21300000, guid: 96adc6a9bf4800446978e400f7385456, type: 3}
+    price: 24000
+    isPurchase: 0
+  - id: Coin_Pack_2
+    coin: 720
+    icon: {fileID: 21300000, guid: 96adc6a9bf4800446978e400f7385456, type: 3}
+    price: 51000
+    isPurchase: 0
+  - id: Coin_Pack_3
+    coin: 1500
+    icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
+    price: 75000
+    isPurchase: 0
+  - id: Coin_Pack_4
+    coin: 2800
+    icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
+    price: 132000
+    isPurchase: 0
+  - id: Coin_Pack_5
+    coin: 6200
+    icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
+    price: 254000
+    isPurchase: 1
+  - id: Coin_Pack_6
+    coin: 13000
+    icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
+    price: 509000
+    isPurchase: 0
