@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Cell Configs
+  m_EditorClassIdentifier: Assembly-CSharp::ListItemPrefabConfig
+  cellPrefab:
+  - type: 0
+    prefab: {fileID: 8726558939858433496, guid: 6af44c763ed2b2a44b6e32fc3e0d38f3, type: 3}
+  - type: 1
+    prefab: {fileID: 2415564956094962643, guid: 219abd718b59b0d4bafc8aedc105fbbc, type: 3}
+  - type: 2
+    prefab: {fileID: 171203306052605662, guid: c4f34f0508b53144da06176c852aa64c, type: 3}
