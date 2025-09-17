@@ -58,7 +58,7 @@ public class StatusBar : MonoBehaviour
         home.gameObject.SetActive(false);
         textLevel.gameObject.SetActive(false);
        // statusCoin.SetActive(false);
-        playScreen.features.SetActive(false);
+        playScreen.boosters.SetActive(false);
         BoardTileCollector.Instance.gameObject.SetActive(false);
         CurrentLevel?.Invoke(TileManager.Instance.currentLevel);
         AudioManager.Instance.StopBgm();

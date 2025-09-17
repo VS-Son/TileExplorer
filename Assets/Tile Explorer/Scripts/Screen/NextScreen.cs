@@ -69,7 +69,7 @@ public class NextScreen : MonoBehaviour
       StatusBar.Instance.textLevel.text = "Level" + (_nextLevel + 1);
       playScreen.UnlockFeature(_nextLevel + 1);
       BoardTileCollector.Instance.gameObject.SetActive(true);
-      playScreen.features.gameObject.SetActive(true);
+      playScreen.boosters.gameObject.SetActive(true);
       this.gameObject.SetActive(false);
       StatusBar.Instance.home.gameObject.SetActive(true);
       StatusBar.Instance.statusCoin.SetActive(true);

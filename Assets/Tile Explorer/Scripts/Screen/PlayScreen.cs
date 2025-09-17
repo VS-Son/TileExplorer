@@ -10,7 +10,7 @@ public class PlayScreen : MonoBehaviour
 {
    public static event Action<int> CurrentLevel;
    public static PlayScreen Instance;
-   [Header("Features")] public GameObject features;
+   [Header("Features")] public GameObject boosters;
    [Header("Level Unlock")]
    [SerializeField] private int levelUnlockUndo;
    [SerializeField] private int levelUnlockMagicWand;
@@ -106,7 +106,16 @@ public class PlayScreen : MonoBehaviour
                   {
                      coinUndo.SetActive(false);
                      adsUndo.SetActive(true);
+                  }if (StatusBar.Instance.currentCoin < 200)
+                  {
+                     coinShuffle.SetActive(false);
+                     adsShuffle.SetActive(true);
+                  }if (StatusBar.Instance.currentCoin < 300)
+                  {
+                     coinMagicWand.SetActive(false);
+                     adsMagicWand.SetActive(true);
                   }
+                  
                }
 
 
@@ -163,7 +172,15 @@ public class PlayScreen : MonoBehaviour
          {
             StatusBar.Instance.currentCoin -= 300;
             TileManager.Instance.CollectSameFruitTiles();
-            if (StatusBar.Instance.currentCoin < 300)
+            if (StatusBar.Instance.currentCoin < 100)
+            {
+               coinUndo.SetActive(false);
+               adsUndo.SetActive(true);
+            }if (StatusBar.Instance.currentCoin < 200)
+            {
+               coinShuffle.SetActive(false);
+               adsShuffle.SetActive(true);
+            }if (StatusBar.Instance.currentCoin < 300)
             {
                coinMagicWand.SetActive(false);
                adsMagicWand.SetActive(true);
@@ -177,6 +194,12 @@ public class PlayScreen : MonoBehaviour
                coinMagicWand.SetActive(true);
                textCoinMagicWand.text = 300.ToString();
             }
+
+            if (StatusBar.Instance.currentCoin < 300)
+            {
+               adsMagicWand.SetActive(true);
+               coinMagicWand.SetActive(false);
+            }
          }
       }
       else
@@ -188,7 +211,6 @@ public class PlayScreen : MonoBehaviour
 
    private void OnShuffle()
    {
-      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
       if (TileManager.Instance.currentLevel >= 3)
       {
          if (currentShuffleCount >= 1)
@@ -197,11 +219,46 @@ public class PlayScreen : MonoBehaviour
             TileManager.Instance.ShuffleTiles();
             textShuffleCount.text = currentShuffleCount.ToString();
          }
+
+         if (adsShuffle.activeSelf)
+         {
+            TileManager.Instance.ShuffleTiles();
+         }
+
+         if (coinShuffle.activeSelf)
+         {
+            StatusBar.Instance.currentCoin -= 200;
+            textCoinShuffle.text = 200.ToString();
+            TileManager.Instance.ShuffleTiles();
+            if (StatusBar.Instance.currentCoin < 100)
+            {
+               coinUndo.SetActive(false);
+               adsUndo.SetActive(true);
+            }if (StatusBar.Instance.currentCoin < 200)
+            {
+               coinShuffle.SetActive(false);
+               adsShuffle.SetActive(true);
+            }if (StatusBar.Instance.currentCoin < 300)
+            {
+               coinMagicWand.SetActive(false);
+               adsMagicWand.SetActive(true);
+            }
+
+         }
          if(currentShuffleCount < 1)
          {
             valueShuffle.SetActive(false);
-            TileManager.Instance.ShuffleTiles();
-            adsShuffle.SetActive(true);
+            if (StatusBar.Instance.currentCoin >= 200)
+            {
+               coinShuffle.SetActive(true);
+               textCoinShuffle.text = 200.ToString();
+            }
+
+            if (StatusBar.Instance.currentCoin < 200)
+            {
+               adsShuffle.SetActive(true);
+               coinShuffle.SetActive(false);
+            }
          }
       }
       else
@@ -209,6 +266,8 @@ public class PlayScreen : MonoBehaviour
          ShowPopupRequirement(3, NotificationType.Level);
          
       }
+
+      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
    }
 
    

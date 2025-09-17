@@ -275,7 +275,7 @@ public class BoardTileCollector : MonoBehaviour
                 {
                     Debug.Log("win");
                     gameObject.SetActive(false);
-                    playScreen.features.SetActive(false);
+                    playScreen.boosters.SetActive(false);
                     nextScreen.gameObject.SetActive(true);
                     StatusBar.Instance.home.gameObject.SetActive(false);
                     StatusBar.Instance.textLevel.gameObject.SetActive(false);

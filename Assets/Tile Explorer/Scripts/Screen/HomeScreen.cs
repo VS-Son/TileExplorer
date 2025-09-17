@@ -64,7 +64,7 @@ public class HomeScreen : MonoBehaviour
         StatusBar.Instance.textLevel.gameObject.SetActive(true);
         StatusBar.Instance.textLevel.text = "Level" + _currentLevel;
         TileManager.Instance.gamePlayTransform.gameObject.SetActive(true);
-        gamePlay.features.gameObject.SetActive(true);
+        gamePlay.boosters.gameObject.SetActive(true);
         tileCollector.gameObject.SetActive(true);
         this.gameObject.SetActive(false);
         DOVirtual.DelayedCall(0.3f, () => { AudioManager.Instance.PlayBgm("bgm", 3f); });
