@@ -16,7 +16,7 @@ public class HomeScreen : MonoBehaviour
     [SerializeField] private SettingsScreen settingsScreen;
     [SerializeField] private List<RectTransform> tileEffect = new List<RectTransform>();
     [SerializeField] private Image bannerExplorer;
-    private int currentLevel = 1;
+    private int _currentLevel = 1;
     private void Start()
     {
         onStart.onClick.AddListener((OnStart));
@@ -57,19 +57,17 @@ public class HomeScreen : MonoBehaviour
         }
         onStart.transform.DOScale(1, 0.4f);
     }
+
     private void OnStart()
     {
-       StatusBar.Instance.statusCoin.SetActive(true);
-      StatusBar.Instance.textLevel.gameObject.SetActive(true);
-      StatusBar.Instance.textLevel.text = "Level" + currentLevel;
-        tileManager.gameObject.SetActive(true);
+        StatusBar.Instance.statusCoin.SetActive(true);
+        StatusBar.Instance.textLevel.gameObject.SetActive(true);
+        StatusBar.Instance.textLevel.text = "Level" + _currentLevel;
+        TileManager.Instance.gamePlayTransform.gameObject.SetActive(true);
+        gamePlay.features.gameObject.SetActive(true);
         tileCollector.gameObject.SetActive(true);
         this.gameObject.SetActive(false);
-        DOVirtual.DelayedCall(0.3f, () =>
-        {
-            AudioManager.Instance.PlayBgm("bgm",3f);
-
-        });
+        DOVirtual.DelayedCall(0.3f, () => { AudioManager.Instance.PlayBgm("bgm", 3f); });
         AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
         StatusBar.Instance.home.gameObject.SetActive(true);
     }
@@ -85,8 +83,8 @@ public class HomeScreen : MonoBehaviour
    
     private void CurrentLevel(int level)
     {
-        currentLevel = level;
-        textCurrentLevel.text = "Level " + currentLevel;
+        _currentLevel = level;
+        textCurrentLevel.text = "Level " + _currentLevel;
     }
 
 }

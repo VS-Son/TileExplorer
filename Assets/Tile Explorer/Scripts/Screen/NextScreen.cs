@@ -37,7 +37,7 @@ public class NextScreen : MonoBehaviour
 
    [Header("Status bar")] [SerializeField]
    private int scoreQuantity = 30;
-   private int _countProgression = 3;
+   private int _countProgression = 0;
    private int _nextLevel;
 
    private void Start()
@@ -65,33 +65,11 @@ public class NextScreen : MonoBehaviour
 
    private void OnNextLevel()
    {
+      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
       StatusBar.Instance.textLevel.text = "Level" + (_nextLevel + 1);
-      if (_nextLevel + 1 > 1)
-      {
-          lockedUndo.SetActive(false);
-      }
-      if (_nextLevel + 1 > 2)
-      {
-          lockedShuffle.SetActive(false);  
-          var color = playScreen.shuffle.image.color;
-          color.a = 1;
-          playScreen.shuffle.image.color = color;
-          var colorIcon = playScreen.iconShuffle.color;
-          colorIcon.a = 1;
-          playScreen.iconShuffle.color = colorIcon;
-      }
-      if (_nextLevel + 1 > 3)
-      {
-          lockedMagicWand.SetActive(false);
-          var color = playScreen.magicWand.image.color;
-          color.a = 1;
-          playScreen.magicWand.image.color = color;
-          var colorIcon = playScreen.iconMagicWand.color;
-          colorIcon.a = 1;
-          playScreen.iconMagicWand.color = colorIcon;
-      }
+      playScreen.UnlockFeature(_nextLevel + 1);
       BoardTileCollector.Instance.gameObject.SetActive(true);
-      playScreen.gameObject.SetActive(true);
+      playScreen.features.gameObject.SetActive(true);
       this.gameObject.SetActive(false);
       StatusBar.Instance.home.gameObject.SetActive(true);
       StatusBar.Instance.statusCoin.SetActive(true);

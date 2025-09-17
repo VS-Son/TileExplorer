@@ -21,7 +21,7 @@ public class ReviveScreen : MonoBehaviour
     private void OnRevive()
     {
         this.gameObject.SetActive(false);
-        BoardTileCollector.Instance.RevertTiles(5);
+        BoardTileCollector.Instance.UndoTiles(5);
 
     }
 }

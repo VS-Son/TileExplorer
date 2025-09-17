@@ -19,7 +19,7 @@ MonoBehaviour:
     isPurchase: 1
     saleOff: 50
     icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
-    coin: 1200
+    coin: 0
     undo: 3
     magicWand: 3
     shuffle: 3
@@ -56,36 +56,31 @@ MonoBehaviour:
   removeAdsData:
   - id: Remove_Ads
     title: Remove ADS
+    coin: 300
     price: 132000
-    isPurchase: 1
+    isPurchase: 0
   coinPackData:
   - id: Coin_Pack_1
     coin: 240
     icon: {fileID: 21300000, guid: 96adc6a9bf4800446978e400f7385456, type: 3}
     price: 24000
-    isPurchase: 0
   - id: Coin_Pack_2
     coin: 720
     icon: {fileID: 21300000, guid: 96adc6a9bf4800446978e400f7385456, type: 3}
     price: 51000
-    isPurchase: 0
   - id: Coin_Pack_3
     coin: 1500
     icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
     price: 75000
-    isPurchase: 0
   - id: Coin_Pack_4
     coin: 2800
     icon: {fileID: 21300000, guid: f3052ad447bf4bd40a7d9e632f6aed97, type: 3}
     price: 132000
-    isPurchase: 0
   - id: Coin_Pack_5
     coin: 6200
     icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
     price: 254000
-    isPurchase: 1
   - id: Coin_Pack_6
     coin: 13000
     icon: {fileID: 21300000, guid: 2b878bc8898d0604a8dae15e51dfd994, type: 3}
     price: 509000
-    isPurchase: 0

@@ -8,6 +8,7 @@ public class RemoveAdsCellView : EnhancedScrollerCellView,IShopCellView
     public bool isPurchased;
     public TMP_Text priceText;
     public TMP_Text titleText;
+    public TMP_Text quantityCoinText;
     public Action<IShopCellView> onClick { get; set; }
     public RemoveAdsData data;
 
@@ -17,10 +18,11 @@ public class RemoveAdsCellView : EnhancedScrollerCellView,IShopCellView
         if (data is RemoveAdsData removeAdsData)
         {
             this.data = removeAdsData;
+            quantityCoinText.text = "+ " + removeAdsData.coin;
             id = removeAdsData.id;
             isPurchased = removeAdsData.isPurchase;
-             priceText.text = "đ" + removeAdsData.price.ToString("F");
-             titleText.text = removeAdsData.title ?? "Remove Ads";
+            priceText.text = !removeAdsData.isPurchase ? "₫" + removeAdsData.price.ToString("F") : "Purchased";
+            titleText.text = removeAdsData.title ?? "Remove Ads";
              
         }
     }
@@ -34,16 +36,17 @@ public class RemoveAdsCellView : EnhancedScrollerCellView,IShopCellView
         if (data is RemoveAdsData removeAdsData)
         {
             if (!id.Equals(removeAdsData.id)) return;
-            Debug.Log("dung id " + id);
+            Debug.Log("id " + id);
             if (!isPurchased)
             {
-                Debug.Log("chua mua");
+                Debug.Log("not purchased");
                 isPurchased = true;
+                ShopManager.Instance.SetStatusValues(removeAdsData.coin, 0,0,0);
                 removeAdsData.isPurchase = isPurchased;
             }
             else
             {
-                Debug.Log("da mua");
+                Debug.Log("has purchased");
 
             }
         }

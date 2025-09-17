@@ -20,21 +20,26 @@ public class BundleItemData:IDataBase
     public int shuffle;
     
     public string Id => id;
-    public bool IsPurchase => isPurchase;
+    public bool IsPurchase { get => isPurchase; set => isPurchase = value; }
     public ShopTypeItem itemType => ShopTypeItem.Bundle;
+    public PurchaseType purchaseType => PurchaseType.NonConsumable;
+
 }
 
 [Serializable]
 public class RemoveAdsData:IDataBase
 {
     public string id;
-    public string title;  
+    public string title;
+    public int coin;
     public int price;
     public bool isPurchase;
 
     public string Id => id;
-    public bool IsPurchase => isPurchase;
+    public bool IsPurchase { get => isPurchase; set => isPurchase = value; }
     public ShopTypeItem itemType => ShopTypeItem.RemoveAds;
+    public PurchaseType purchaseType => PurchaseType.NonConsumable;
+
    
 }
 
@@ -45,10 +50,13 @@ public class CoinPackData:IDataBase
     public int coin;
     public Sprite icon;
     public int price;
-    public bool isPurchase;
+    private bool _isPurchase;
 
     public string Id => id;
-    public bool IsPurchase => isPurchase;    public ShopTypeItem itemType => ShopTypeItem.Coin;
+    public bool IsPurchase { get => _isPurchase; set => _isPurchase = value; }
+    public ShopTypeItem itemType => ShopTypeItem.Coin;
+    public PurchaseType purchaseType => PurchaseType.Consumable;
+
     
 }
 

@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,10 +113,10 @@ TextureImporter:
       name: element_tile_0
       rect:
         serializedVersion: 2
-        x: 44
-        y: 346
-        width: 96
-        height: 127
+        x: 28
+        y: 337
+        width: 130
+        height: 143
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,10 +134,10 @@ TextureImporter:
       name: element_tile_1
       rect:
         serializedVersion: 2
-        x: 206
-        y: 345
-        width: 92
-        height: 129
+        x: 196
+        y: 334
+        width: 114
+        height: 146
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,10 +155,10 @@ TextureImporter:
       name: element_tile_2
       rect:
         serializedVersion: 2
-        x: 353
-        y: 351
-        width: 112
-        height: 112
+        x: 343
+        y: 340
+        width: 135
+        height: 140
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -176,10 +176,10 @@ TextureImporter:
       name: element_tile_3
       rect:
         serializedVersion: 2
-        x: 41
-        y: 209
-        width: 109
-        height: 103
+        x: 30
+        y: 193
+        width: 130
+        height: 138
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -197,10 +197,10 @@ TextureImporter:
       name: element_tile_4
       rect:
         serializedVersion: 2
-        x: 213
-        y: 194
-        width: 78
-        height: 127
+        x: 202
+        y: 195
+        width: 114
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -218,10 +218,10 @@ TextureImporter:
       name: element_tile_5
       rect:
         serializedVersion: 2
-        x: 358
-        y: 199
-        width: 101
-        height: 116
+        x: 351
+        y: 193
+        width: 114
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -239,10 +239,10 @@ TextureImporter:
       name: element_tile_6
       rect:
         serializedVersion: 2
-        x: 43
-        y: 41
-        width: 107
-        height: 133
+        x: 39
+        y: 43
+        width: 114
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -260,10 +260,10 @@ TextureImporter:
       name: element_tile_7
       rect:
         serializedVersion: 2
-        x: 197
+        x: 196
         y: 46
-        width: 111
-        height: 118
+        width: 114
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -281,10 +281,10 @@ TextureImporter:
       name: element_tile_8
       rect:
         serializedVersion: 2
-        x: 352
-        y: 47
+        x: 351
+        y: 45
         width: 114
-        height: 119
+        height: 129
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

@@ -8,7 +8,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
 {
     public SpriteRenderer spriteFruit;
     public SpriteRenderer background;
-    public FruitType fruitType;
+    public TypeTileId typeTileId;
 
     public int col;
     public int row;

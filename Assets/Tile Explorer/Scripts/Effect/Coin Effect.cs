@@ -24,7 +24,7 @@ public class CoinEffect : MonoBehaviour
    {
       int coinCount = rewardPoint / pointPerCoin;
       goalScore = rewardPoint;
-      Debug.LogError(coinCount);
+     // Debug.LogError(coinCount);
       StartCoroutine(SpawnCoins(coinCount));
    }
 
@@ -72,12 +72,17 @@ public class CoinEffect : MonoBehaviour
          elapsed += Time.deltaTime;
          float t = elapsed / duration;
          currentCoin = Mathf.RoundToInt(Mathf.Lerp(startScore, targetScore, t));
-        // textCurrentCoin.text = textCurrentCoin.ToString();
+         //textCurrentCoin.text = textCurrentCoin.ToString();
          yield return null;
       }
 
       currentCoin = targetScore;
-      textCurrentCoin.text = currentCoin.ToString();
+     // textCurrentCoin.text = CurrentCoin.ToString();
+     targetPoint.transform.DOScale(new Vector2(1.4f, 1.4f), 0.4f).OnComplete((() =>
+     {
+        targetPoint.transform.DOScale(1, 0.4f);
+     }));
+      StatusBar.Instance.UpdateCoin(pointPerCoin);
       if (currentCoin >= goalScore)
       {
          onCompleteGoal?.Invoke();

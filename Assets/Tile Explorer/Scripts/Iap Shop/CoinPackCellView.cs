@@ -8,7 +8,6 @@ using System;
 public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView
 {
     public string id;
-    public bool isPurchased;
     public Image iconCoin;
     public TMP_Text quantityCoinText;
     public TMP_Text priceText;
@@ -22,12 +21,11 @@ public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView
         if (data is CoinPackData coinPackData)
         {
             id = coinPackData.id;
-            isPurchased = coinPackData.isPurchase;
             this.data = coinPackData;
             iconCoin.sprite = coinPackData.icon;
             quantityCoinText.text = "x" + coinPackData.coin; 
             priceText.text = "đ" + coinPackData.price.ToString("F");
-            
+
         }
       
     }
@@ -41,18 +39,8 @@ public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView
         if (data is CoinPackData coinData)
         {
             if (!id.Equals(coinData.id)) return;
-            Debug.Log("dung id " + id);
-            if (!isPurchased)
-            {
-                Debug.Log("chua mua");
-                isPurchased = true;
-                coinData.isPurchase = isPurchased;
-            }
-            else
-            {
-                Debug.Log("da mua");
-
-            }
+            ShopManager.Instance.SetStatusValues(coinData.coin, 0, 0 ,0);
+            PlayScreen.Instance.SetFeatureValues( 0, 0 ,0);
         }
     }
 }

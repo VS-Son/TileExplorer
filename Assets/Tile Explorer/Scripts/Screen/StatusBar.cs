@@ -9,17 +9,29 @@ public class StatusBar : MonoBehaviour
 {
     public static StatusBar Instance;
     public static event Action<int> CurrentLevel;
-    public int currentCoin;
+    public int coin;
+    [Header("Button")]
     public Button home;
     public Button setting;
     public Button shop;
-    public TMP_Text scoreCoin;
+    [Header("Screen")]
     public SettingsScreen settingsScreen;
     public HomeScreen homeScreen;
     public PlayScreen playScreen;
     public ShopScroller shopScreen;
     public GameObject statusCoin;
     public TMP_Text textLevel;
+    [SerializeField] private TMP_Text textCoin;
+
+    public int currentCoin
+    {
+        get => coin;
+        set
+        {
+            coin = value;
+            textCoin.text = FormatCoin(coin);
+        }
+    }
     private void Awake()
     {
         Instance = this;
@@ -30,21 +42,23 @@ public class StatusBar : MonoBehaviour
         home.onClick.AddListener((OnHome));
         setting.onClick.AddListener((OnSetting));
         shop.onClick.AddListener(OnShop);
+        textCoin.text = FormatCoin(coin);
 
     }
 
     private void OnShop()
     {
         shopScreen.gameObject.SetActive(true);
+        ShopManager.Instance.valueCoin.text = FormatCoin(currentCoin);
     }
     private void OnHome()
     {
         homeScreen.gameObject.SetActive(true);
-        TileManager.Instance.gameObject.SetActive(false);
+        TileManager.Instance.gamePlayTransform.gameObject.SetActive(false);
         home.gameObject.SetActive(false);
         textLevel.gameObject.SetActive(false);
        // statusCoin.SetActive(false);
-        playScreen.gameObject.SetActive(false);
+        playScreen.features.SetActive(false);
         BoardTileCollector.Instance.gameObject.SetActive(false);
         CurrentLevel?.Invoke(TileManager.Instance.currentLevel);
         AudioManager.Instance.StopBgm();
@@ -54,6 +68,20 @@ public class StatusBar : MonoBehaviour
     {
         settingsScreen.gameObject.SetActive(true);
         AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
+    }
+
+    public void UpdateCoin(int coinCount)
+    {
+        currentCoin += coinCount;
+    }
+
+    public string FormatCoin(int value)
+    {
+        if (value >= 1000)
+        {
+            return (value / 1000) + "K";
+        }
+        return value.ToString();
     }
 }
 

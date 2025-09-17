@@ -29,7 +29,7 @@ public class BoardTileCollector : MonoBehaviour
     private int count = 0;
     private int slotIndex = 0;
     private Queue<Tile> waitSlot = new Queue<Tile>();
-    private Dictionary<FruitType, List<Tile>> availableFruits = new Dictionary<FruitType, List<Tile>>();
+    private Dictionary<TypeTileId, List<Tile>> availableFruits = new Dictionary<TypeTileId, List<Tile>>();
     private int countProcessing = 0;
 
 
@@ -65,12 +65,25 @@ public class BoardTileCollector : MonoBehaviour
         tile.transform.parent = slots[slotIndex];
         if (collectedTiles.Count > 0 && TileManager.Instance.currentLevel > 1)
         {
-            var color = playScreen.undo.image.color;
-            color.a = 1;
-            playScreen.undo.image.color = color;
-            var colorIcon = playScreen.iconUndo.color;
-            colorIcon.a = 1;
-            playScreen.iconUndo.color = colorIcon;
+            playScreen.undoGroup.alpha = 1f;
+            if (playScreen.currentUndoCount < 1)
+            {       
+                playScreen.valueUndo.SetActive(false);
+
+                switch (StatusBar.Instance.currentCoin)
+                {
+                    case < 100:
+                        playScreen.adsUndo.SetActive(true);
+                        playScreen.coinUndo.SetActive(false);
+                        break;
+                    default:
+                        playScreen.adsUndo.SetActive(false);
+                        playScreen.coinUndo.SetActive(true);
+                        playScreen.textCoinUndo.text = 100.ToString();
+
+                        break;
+                }
+            }
         }
         
         SetSameFruits(tile);
@@ -116,7 +129,7 @@ public class BoardTileCollector : MonoBehaviour
         var sameFruit = new List<Tile>();
         foreach (var tileObject in collectedTiles)
         {
-            if (tileObject.fruitType == tile.fruitType)
+            if (tileObject.typeTileId == tile.typeTileId)
             {
                 sameFruit.Add(tileObject);
                 
@@ -194,9 +207,7 @@ public class BoardTileCollector : MonoBehaviour
                 slotIndex = targetTile;
                 collectedTiles.Remove(tile);
                 collectedTiles.Insert(targetIndex + 1, tile);
-                DOVirtual.DelayedCall(0.1f, () => {
-                    ReArrangeTileObjects();
-                });
+                DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
                 tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() =>
                 { 
                     DOVirtual.DelayedCall(0.1f, () =>
@@ -251,15 +262,7 @@ public class BoardTileCollector : MonoBehaviour
             Destroy(tile.gameObject);
         }
 
-        if (collectedTiles.Count == 0 && TileManager.Instance.currentLevel > 1)
-        {
-            var color = playScreen.undo.image.color;
-            color.a = 0.3f;
-            playScreen.undo.image.color = color;
-            var colorIcon = playScreen.iconUndo.color;
-            colorIcon.a = 0.3f;
-            playScreen.iconUndo.color = colorIcon;
-        }
+       
 
         ReArrangeTileObjects();
         isProcessing = false;
@@ -272,7 +275,7 @@ public class BoardTileCollector : MonoBehaviour
                 {
                     Debug.Log("win");
                     gameObject.SetActive(false);
-                    playScreen.gameObject.SetActive(false);
+                    playScreen.features.SetActive(false);
                     nextScreen.gameObject.SetActive(true);
                     StatusBar.Instance.home.gameObject.SetActive(false);
                     StatusBar.Instance.textLevel.gameObject.SetActive(false);
@@ -329,7 +332,7 @@ public class BoardTileCollector : MonoBehaviour
         originalTile.Clear();
     }
 
-    public void RevertTiles(int numTiles)
+    public void UndoTiles(int numTiles)
     {
         int count = Mathf.Min(numTiles, originalTile.Count);
 

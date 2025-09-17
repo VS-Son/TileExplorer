@@ -7,20 +7,25 @@ using UnityEngine.Serialization;
 
 public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    [Header("Scroller References")]
+    [Header("Status Bar")] [Header("Scroller References")]
     public EnhancedScroller scroller;
-    [Header("Item Prefabs")]
-    public ListItemPrefabConfig cellConfigs;
+
+    [Header("Item Prefabs")] public ListItemPrefabConfig cellConfigs;
+
     [FormerlySerializedAs("shopDatabase")] [Header("Shop Data")]
     public ShopItemData shopDataConfig;
-    private Dictionary<ShopTypeItem, EnhancedScrollerCellView> _prefabDict = new Dictionary<ShopTypeItem, EnhancedScrollerCellView>();
+
+    private Dictionary<ShopTypeItem, EnhancedScrollerCellView> _prefabDict =
+        new Dictionary<ShopTypeItem, EnhancedScrollerCellView>();
+
     private List<IDataBase> _allItems = new List<IDataBase>();
-    
+    private List<IDataBase> _originalItems = new List<IDataBase>();
+
 
     void Start()
     {
         InitializeShop();
-        UpdatePurchased();
+        UpdatePurchasedNonConsumable();
     }
 
     private void InitializeShop()
@@ -35,9 +40,10 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         _allItems = shopDataConfig.GetAllItems();
+        _originalItems = new List<IDataBase>(_allItems);
         scroller.ReloadData();
     }
-    
+
 
     public int GetNumberOfCells(EnhancedScroller scroller)
     {
@@ -50,7 +56,7 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
             return 200f;
 
         IDataBase item = _allItems[dataIndex];
-        
+
         switch (item.itemType)
         {
             case ShopTypeItem.Bundle:
@@ -74,7 +80,8 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         if (!_prefabDict.TryGetValue(item.itemType, out var prefab))
         {
             return null;
-        } 
+        }
+
         cellView = scroller.GetCellView(prefab);
 
         if (cellView is IShopCellView dataHandler)
@@ -85,37 +92,63 @@ public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
         }
 
         return cellView;
-        
+
     }
 
     private void OnClick(IShopCellView cellView)
     {
+        IDataBase purchasedItem = null;
+
         switch (cellView)
         {
             case BundleCellView bundleCellView:
+                purchasedItem = bundleCellView.data;
                 bundleCellView.OnPurchase(bundleCellView.data);
                 break;
             case CoinPackCellView coinPackCellView:
+                purchasedItem = coinPackCellView.data;
                 Debug.Log(coinPackCellView.data);
                 coinPackCellView.OnPurchase(coinPackCellView.data);
                 break;
             case RemoveAdsCellView removeAdsCellView:
                 Debug.Log(removeAdsCellView.data);
+                purchasedItem = removeAdsCellView.data;
                 removeAdsCellView.OnPurchase(removeAdsCellView.data);
                 break;
-        
+
         }
-     
-        UpdatePurchased();
+
+
+        if (purchasedItem is { purchaseType: PurchaseType.NonConsumable })
+        {
+            UpdatePurchasedNonConsumable();
+        }
+
     }
 
-    private void UpdatePurchased()
+    private void UpdatePurchasedNonConsumable()
     {
-        
-        var notPurchase = _allItems.Where(item => !(item.IsPurchase)).ToList();
-        var purchased = _allItems.Where(item => item.IsPurchase).ToList();
+
+        var notPurchase = _originalItems.Where(item => !item.IsPurchase).ToList();
+        var purchased = _originalItems.Where(item => item.IsPurchase).ToList();
         _allItems = notPurchase.Concat(purchased).ToList();
+
         scroller.ReloadData();
-        
+    }
+
+
+
+
+
+    public void RefundPurchased()
+    {
+        foreach (var item in _allItems)
+        {
+            item.IsPurchase = false;
+        }
+
+        _allItems = new List<IDataBase>(_originalItems);
+
+        scroller.ReloadData();
     }
 }

@@ -120,7 +120,10 @@ namespace EnhancedScrollerDemos.SelectionDemo
         /// <param name="selected">The selection state of the cell</param>
         private void SelectedChanged(bool selected)
         {
-            selectionPanel.color = (selected ? selectedColor : unSelectedColor);
+            if (selected)
+                selectionPanel.color = selectedColor;
+            else
+                selectionPanel.color = unSelectedColor;
         }
 
         /// <summary>

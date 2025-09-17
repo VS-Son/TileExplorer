@@ -2,25 +2,40 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
 public class SettingsScreen : MonoBehaviour
 {
   // [SerializeField] private GamePlaying gamePlaying;
+  public static SettingsScreen Instance;
    [SerializeField] private Button close;
    [SerializeField] private Button buttonToggleMusic;
    [SerializeField] private GameObject musicOn;
    [SerializeField] private Button buttonSoundToggle;
    [SerializeField] private GameObject soundOn;
+   
 
+    private void Awake()
+    {
+       if (Instance != null && Instance != this)
+       {
+          Destroy(gameObject);
+       }
+       else
+       {
+          Instance = this;
+       }
+    }
 
-   private void Start()
+    private void Start()
    {
       close.onClick.AddListener(OnClose);
       buttonToggleMusic.onClick.AddListener(MusicOn);
       buttonSoundToggle.onClick.AddListener(SoundOn);
    }
+
+  
 
    private void OnClose()
    {
@@ -58,4 +73,6 @@ public class SettingsScreen : MonoBehaviour
          AudioManager.Instance.ToggleMute(true, AudioType.Bgm); 
       }
    }
+
+ 
 }

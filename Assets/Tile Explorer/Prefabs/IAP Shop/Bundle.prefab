@@ -907,7 +907,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cellIdentifier: Bundle
-  coin: {fileID: 928648880691698196}
+  id: 
+  isPurchased: 0
+  iconCoin: {fileID: 928648880691698196}
   itemNameText: {fileID: 4360491126310966108}
   priceText: {fileID: 7459869807009903918}
   saleOffText: {fileID: 9120083456347848659}
@@ -915,6 +917,17 @@ MonoBehaviour:
   quantityUndoText: {fileID: 915934058383405004}
   quantityMagicWandText: {fileID: 1353883437286340440}
   quantityShuffleText: {fileID: 6141340103050650902}
+  data:
+    title: 
+    id: 
+    price: 0
+    isPurchase: 0
+    saleOff: 0
+    icon: {fileID: 0}
+    coin: 0
+    undo: 0
+    magicWand: 0
+    shuffle: 0
 --- !u!1 &5640495583145957810
 GameObject:
   m_ObjectHideFlags: 0

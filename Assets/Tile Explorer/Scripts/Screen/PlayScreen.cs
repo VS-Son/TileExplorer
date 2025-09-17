@@ -9,11 +9,13 @@ using UnityEngine.Events;
 public class PlayScreen : MonoBehaviour
 {
    public static event Action<int> CurrentLevel;
-
+   public static PlayScreen Instance;
+   [Header("Features")] public GameObject features;
+   [Header("Level Unlock")]
+   [SerializeField] private int levelUnlockUndo;
+   [SerializeField] private int levelUnlockMagicWand;
+   [SerializeField] private int levelUnlockShuffle;
    [Header("Button")]
-   [SerializeField] private Button home;
-
-   [SerializeField] private Button setting;
    public Button undo;
    public Button magicWand;
    public Button shuffle;
@@ -21,19 +23,47 @@ public class PlayScreen : MonoBehaviour
    public Image iconUndo;
    public Image iconMagicWand;
    public Image iconShuffle;
-   [Header("Screen")]
-   [SerializeField] private HomeScreen homeScreen;
-   [SerializeField] private SettingsScreen settingsScreen;
    [Header("Text")]
-   [SerializeField] private TMP_Text currentLevel;
-   [SerializeField] private TMP_Text totalCoin;
+   [SerializeField] private TMP_Text textUndoCount;
+   [SerializeField] private TMP_Text textMagicWandCount;
+   [SerializeField] private TMP_Text textShuffleCount;
+   public TMP_Text textCoinUndo;
+   public TMP_Text textCoinMagicWand;
+   public TMP_Text textCoinShuffle;
    [SerializeField] private TMP_Text content;
-   [Header("Object")]
-   [SerializeField] private RectTransform statusBar;
+   [Space]
    [SerializeField] private RectTransform popupNotification;
-   [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle;
-   
+   [Header("Locked")]
+   [SerializeField] private GameObject lockedUndo;
+   [SerializeField] private GameObject lockedMagicWand;
+   [SerializeField] private GameObject lockedShuffle;
+   [Header("Value")]
+   [SerializeField] public GameObject valueUndo; 
+   [SerializeField] public GameObject valueMagicWand; 
+   [SerializeField] public GameObject valueShuffle;
+   [Header("Coin")] 
+   public GameObject coinUndo;
+   public GameObject coinMagicWand;
+   public GameObject coinShuffle;
+   [Header("Ads")]
+   public GameObject adsUndo;
+   public GameObject adsMagicWand;
+   public GameObject adsShuffle;
+   [Header("Canvas Group")]
+   public CanvasGroup undoGroup;
+   public CanvasGroup magicWandGroup;
+   public CanvasGroup shuffleGroup;
+   [Header("Count")]
+   public int currentUndoCount;
+   public int currentMagicWandCount;
+   public int currentShuffleCount;
+
    private Tween _moveTween, _fadeTween1,_fadeTween2, _scaleTween1, _scaleTween2;
+
+   private void Awake()
+   {
+      Instance = this;
+   }
 
    private void Start()
    {
@@ -42,24 +72,6 @@ public class PlayScreen : MonoBehaviour
       shuffle.onClick.AddListener((OnShuffle));
    }
 
-   private void OnSetting()
-   {
-      settingsScreen.gameObject.SetActive(true);
-      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-   }
-   private void MagicWand()
-   {
-      if (TileManager.Instance.currentLevel >= 4)
-      {
-         TileManager.Instance.CollectSameFruitTiles();
-         lockedMagicWand.SetActive(false);
-      }
-      else
-      {
-         ShowPopupRequirement(4, NotificationType.Level );
-      }
-      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-   }
 
    private void OnUndo()
    {
@@ -71,18 +83,56 @@ public class PlayScreen : MonoBehaviour
                ShowPopupRequirement(2, NotificationType.TileMissing);
                break;
             case > 0:
-               BoardTileCollector.Instance.RevertTiles(1);
+            {
+               if (currentUndoCount >= 1)
+               {
+                  valueUndo.SetActive(true);
+                  currentUndoCount--;
+                  BoardTileCollector.Instance.UndoTiles(1);
+                  textUndoCount.text = currentUndoCount.ToString();
+               }
+
+               if (adsUndo.activeSelf)
+               {
+                  BoardTileCollector.Instance.UndoTiles(1);
+
+               }
+
+               if (coinUndo.activeSelf )
+               {
+                  StatusBar.Instance.currentCoin -= 100;
+                  BoardTileCollector.Instance.UndoTiles(1);
+                  if (StatusBar.Instance.currentCoin < 100)
+                  {
+                     coinUndo.SetActive(false);
+                     adsUndo.SetActive(true);
+                  }
+               }
+
+
+               if (currentUndoCount < 1)
+               {
+                  valueUndo.SetActive(false);
+                  if (StatusBar.Instance.currentCoin >= 100)
+                  {
+                     coinUndo.SetActive(true);
+                     textCoinUndo.text = 100.ToString();
+                  }
+               }
+
                break;
+            }
          }
+
          if(BoardTileCollector.Instance.collectedTiles.Count == 0)
          {
-            var color = undo.image.color;
-            color.a = 0.3f;
-            undo.image.color = color;
-            var colorIcon = iconUndo.color;
-            colorIcon.a = 0.3f;
-            iconUndo.color = colorIcon;
-            //ShowPopupRequirement(2);
+          
+            undoGroup.alpha = 0.3f;
+            if (currentUndoCount < 1)
+            {
+               adsUndo.SetActive(false);
+            }
+            
          }
       }
       else
@@ -93,14 +143,66 @@ public class PlayScreen : MonoBehaviour
 
    }
 
+   private void MagicWand()
+   {
+      if (TileManager.Instance.currentLevel >= 3)
+      {
+         if (currentMagicWandCount >= 1)
+         {
+            currentMagicWandCount--;
+             TileManager.Instance.CollectSameFruitTiles();
+             textMagicWandCount.text = currentMagicWandCount.ToString();
+         }
+
+         if (adsMagicWand.activeSelf)
+         {
+            TileManager.Instance.CollectSameFruitTiles();
+         }
+
+         if (coinMagicWand.activeSelf)
+         {
+            StatusBar.Instance.currentCoin -= 300;
+            TileManager.Instance.CollectSameFruitTiles();
+            if (StatusBar.Instance.currentCoin < 300)
+            {
+               coinMagicWand.SetActive(false);
+               adsMagicWand.SetActive(true);
+            }
+         }
+         if(currentMagicWandCount < 1)
+         {
+            valueMagicWand.SetActive(false);
+            if (StatusBar.Instance.currentCoin >= 300)
+            {
+               coinMagicWand.SetActive(true);
+               textCoinMagicWand.text = 300.ToString();
+            }
+         }
+      }
+      else
+      {
+         ShowPopupRequirement(4, NotificationType.Level );
+      }
+      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
+   }
+
    private void OnShuffle()
    {
-      //  Debug.Log("undo");
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
       if (TileManager.Instance.currentLevel >= 3)
       {
-         TileManager.Instance.ShuffleTiles();
-         lockedShuffle.SetActive(false); 
+         if (currentShuffleCount >= 1)
+         {
+            currentShuffleCount--;
+            TileManager.Instance.ShuffleTiles();
+            textShuffleCount.text = currentShuffleCount.ToString();
+         }
+         if(currentShuffleCount < 1)
+         {
+            valueShuffle.SetActive(false);
+            TileManager.Instance.ShuffleTiles();
+            adsShuffle.SetActive(true);
+         }
       }
       else
       {
@@ -109,20 +211,7 @@ public class PlayScreen : MonoBehaviour
       }
    }
 
-   private void OnHome()
-   {
-      homeScreen.gameObject.SetActive(true);
-      this.gameObject.SetActive(false);
-      TileManager.Instance.gameObject.SetActive(false);
-      BoardTileCollector.Instance.gameObject.SetActive(false);
-      CurrentLevel?.Invoke(TileManager.Instance.currentLevel);
-      statusBar.DOAnchorPos(new Vector2(0, 85),0.6f).SetEase(Ease.OutCubic);
-      AudioManager.Instance.StopBgm();
-      //AudioManager.Instance.PlayBgm("bgm");
-      AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-
-   }
-
+   
    private void ShowPopupRequirement(int level, NotificationType notificationType)
    {
       _moveTween?.Kill();
@@ -169,5 +258,88 @@ public class PlayScreen : MonoBehaviour
             break;
       }
    }
-   
+
+   private void SetAlphaImage(Color color, Image changeAlpha)
+   {
+      color.a = 0.3f;
+      changeAlpha.color = color;
+   }
+   public void UnlockFeature(int nextLevel)
+   {
+      if (nextLevel >= levelUnlockUndo)
+      {
+         lockedUndo.SetActive(false);
+         undoGroup.alpha = 0.3f;
+         textUndoCount.text = currentUndoCount.ToString();
+
+      }
+      if (nextLevel >= levelUnlockShuffle)
+      {
+         lockedShuffle.SetActive(false);
+         shuffleGroup.alpha = 1;
+         textShuffleCount.text = currentShuffleCount.ToString();
+
+      }
+      if (nextLevel >= levelUnlockMagicWand)
+      {
+         lockedMagicWand.SetActive(false);
+         magicWandGroup.alpha = 1;
+         textMagicWandCount.text = currentMagicWandCount.ToString();
+
+      }
+   }
+
+   public void SetFeatureValues(int undoCount, int magicWandCount, int shuffleCount)
+   {
+      if (StatusBar.Instance.currentCoin >= 100 && currentUndoCount < 1)
+      {
+         coinUndo.SetActive(true);
+         textCoinUndo.text = 100.ToString();
+
+      }
+      if (StatusBar.Instance.currentCoin >= 300 && currentMagicWandCount < 1 )
+      {
+          coinMagicWand.SetActive(true);
+          textCoinMagicWand.text = 300.ToString();
+      }
+        
+      if (StatusBar.Instance.currentCoin >= 200 && currentShuffleCount < 1)
+      {
+         coinShuffle.SetActive(true);
+         textCoinShuffle.text = 200.ToString();
+      }
+
+      if (undoCount >= 1)
+      {
+         valueUndo.SetActive(true);
+         coinUndo.SetActive(false);
+      }
+
+      if (magicWandCount >= 1)
+      {
+         coinMagicWand.SetActive(false);
+         valueMagicWand.SetActive(true);
+
+      }
+
+      if (shuffleCount >= 1)
+      {
+         valueShuffle.SetActive(true);
+         coinShuffle.SetActive(false);
+      }
+      
+      adsUndo.SetActive(false);
+      adsMagicWand.SetActive(false);
+      adsShuffle.SetActive(false);
+      
+      currentUndoCount += undoCount;
+      currentMagicWandCount += magicWandCount;
+      currentShuffleCount += shuffleCount;
+      
+      textUndoCount.text = currentUndoCount.ToString();
+      textMagicWandCount.text = currentMagicWandCount.ToString();
+      textShuffleCount.text = currentShuffleCount.ToString();
+   }
+
+  
 }

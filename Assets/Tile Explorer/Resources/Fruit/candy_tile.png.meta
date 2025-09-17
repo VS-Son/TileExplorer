@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 200
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,12 +113,12 @@ TextureImporter:
       name: candy_tile_0
       rect:
         serializedVersion: 2
-        x: 40
+        x: 12
         y: 333
-        width: 91
+        width: 144
         height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -134,12 +134,12 @@ TextureImporter:
       name: candy_tile_1
       rect:
         serializedVersion: 2
-        x: 195
-        y: 338
-        width: 99
-        height: 139
+        x: 176
+        y: 335
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -155,12 +155,12 @@ TextureImporter:
       name: candy_tile_2
       rect:
         serializedVersion: 2
-        x: 333
-        y: 337
+        x: 332
+        y: 338
         width: 139
         height: 135
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -176,12 +176,12 @@ TextureImporter:
       name: candy_tile_3
       rect:
         serializedVersion: 2
-        x: 40
-        y: 181
-        width: 112
-        height: 124
+        x: 24
+        y: 173
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -197,12 +197,12 @@ TextureImporter:
       name: candy_tile_4
       rect:
         serializedVersion: 2
-        x: 200
-        y: 202
-        width: 97
-        height: 101
+        x: 179
+        y: 174
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -218,12 +218,12 @@ TextureImporter:
       name: candy_tile_5
       rect:
         serializedVersion: 2
-        x: 335
-        y: 181
-        width: 142
-        height: 124
+        x: 336
+        y: 175
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -239,12 +239,12 @@ TextureImporter:
       name: candy_tile_6
       rect:
         serializedVersion: 2
-        x: 40
-        y: 37
-        width: 106
-        height: 103
+        x: 22
+        y: 22
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: candy_tile_7
       rect:
         serializedVersion: 2
-        x: 182
-        y: 32
-        width: 131
-        height: 132
+        x: 179
+        y: 26
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -281,12 +281,12 @@ TextureImporter:
       name: candy_tile_8
       rect:
         serializedVersion: 2
-        x: 342
-        y: 37
-        width: 114
-        height: 120
+        x: 335
+        y: 26
+        width: 144
+        height: 144
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

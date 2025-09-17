@@ -38,17 +38,18 @@ public class RemoveTileIndex
     public int posX;
 }
 
-public enum FruitType
+public enum TypeTileId
 {
-    Banana,
-    Apple,
-    Orange,
-    Watermelon,
-    Grapes,
-    Cherry,
-    Strawberry,
-    Lemon,
-    Pineapple,
+    ID1,
+    ID2,
+    ID3,
+    ID4,
+    ID5,
+    ID6,
+    ID7,
+    ID8,
+    ID9,
+    ID10,
     None
 }
 
@@ -61,6 +62,6 @@ public enum NotificationType
 [Serializable]
 public class TileSpriteData
 {
-    public FruitType fruitType;
+    public TypeTileId typeTileId;
     public Sprite sprite;
 }

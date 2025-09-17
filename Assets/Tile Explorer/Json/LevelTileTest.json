@@ -1,0 +1,109 @@
+{
+  "name": "Tile Explorer",
+  "LevelTile": [
+    {
+      "name": "Level_1_Tutorial",
+      "level": 1,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+    },
+    {
+      "name": "Level_2_CrossShape",
+      "level": 2,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+      
+    },
+    {
+      "name": "Level_3_Rectangle",
+      "level": 3,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+    },
+    {
+      "name": "Level_4_HollowCenter",
+      "level": 4,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+    },
+    {
+      "name": "Level_5_OffsetLayer",
+      "level": 5,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+      
+    },
+    {
+      "name": "Level_6_Frame",
+      "level": 6,
+      "size": 1.0,
+      "spacing": 2,
+      "tileLayer": [
+        {
+          "layerSort": 1,
+          "posY": 0,
+          "posX": 0,
+          "rows": 3,
+          "cols": 1,
+          "tileNameLayer": "Layer1",
+          "removeTile": []
+        }
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ public class TileObject : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer tileSprite;
 
-    public FruitType fruitType;
+    public TypeTileId typeTileId;
     public bool isLocked;
     //public TileData MyData;
     public Action<TileObject> OnPicked;

@@ -15,34 +15,22 @@ public class TileManager : MonoBehaviour
     public TextAsset tileJson;
     [SerializeField] private Tile tilePrefab;
     [SerializeField] private List<TileSpriteData> spriteDataList;
+    [SerializeField] private ListTileTheme listTileTheme;
+    public Transform gamePlayTransform;
 
     private List<LevelData> m_TileLevel;
-    private readonly Dictionary<FruitType, int> m_Count = new Dictionary<FruitType, int>();
-    private Dictionary<FruitType, Sprite> m_SpriteLookup;
+    private readonly Dictionary<TypeTileId, int> m_Count = new Dictionary<TypeTileId, int>();
+    private Dictionary<TypeTileId, Sprite> m_SpriteLookup;
     public int tileIndex { get; set; }
     private float sizeToLoad { get; set; }
     private float spacingToLoad { get; set; }
 
 
-    private List<FruitType> m_DistributedTiles;
+    private List<TypeTileId> m_DistributedTiles;
 
     public readonly Dictionary<int, Tile[,]> m_LayerTiles = new();
 
     private readonly Dictionary<int, Transform> m_LayerParent = new();
-
-
-    private readonly List<FruitType> m_ListFruit = new List<FruitType>()
-    {
-        FruitType.Apple,
-        FruitType.Banana,
-        FruitType.Grapes,
-        FruitType.Orange,
-        FruitType.Watermelon,
-        FruitType.Strawberry,
-        FruitType.Pineapple,
-        FruitType.Cherry,
-        FruitType.Lemon,
-    };
 
 
     private void Awake()
@@ -55,8 +43,27 @@ public class TileManager : MonoBehaviour
         {
             Instance = this;
         }
-
+        
+        TileThemeData confirmedTheme = listTileTheme.tileThemeData.Find(t => t.isSelected);
+        for (int i = 0; i < spriteDataList.Count; i++)
+        {
+            spriteDataList[i].sprite = confirmedTheme.spriteTile[i];
+        }
     }
+
+    private readonly List<TypeTileId> m_ListFruit = new List<TypeTileId>()
+    {
+        TypeTileId.ID1,
+        TypeTileId.ID2,
+        TypeTileId.ID3,
+        TypeTileId.ID4,
+        TypeTileId.ID5,
+        TypeTileId.ID6,
+        TypeTileId.ID7,
+        TypeTileId.ID8,
+        TypeTileId.ID9,
+        TypeTileId.ID10,
+    };
 
     void Start()
     {
@@ -79,12 +86,12 @@ public class TileManager : MonoBehaviour
 
     private void GenerateTileManager()
     {
-        m_SpriteLookup = new Dictionary<FruitType, Sprite>();
+        m_SpriteLookup = new Dictionary<TypeTileId, Sprite>();
         foreach (var data in spriteDataList)
         {
-            if (!m_SpriteLookup.ContainsKey(data.fruitType))
+            if (!m_SpriteLookup.ContainsKey(data.typeTileId))
             {
-                m_SpriteLookup.Add(data.fruitType, data.sprite);
+                m_SpriteLookup.Add(data.typeTileId, data.sprite);
             }
         }
 
@@ -147,17 +154,17 @@ public class TileManager : MonoBehaviour
             m_Count[fruitType]++;
         }
 
-        foreach (var kv in m_Count)
-        {
-            Debug.Log($"{kv.Key}: {kv.Value}");
-        }
+        // foreach (var kv in m_Count)
+        // {
+        //     Debug.Log($"{kv.Key}: {kv.Value}");
+        // }
     }
 
-    private List<FruitType> GenerateDistributedTiles(int totalTilesCreated, List<FruitType> list)
+    private List<TypeTileId> GenerateDistributedTiles(int totalTilesCreated, List<TypeTileId> list)
     {
         List<int> itemCounts = GenerateBalancedCountsTile(totalTilesCreated, list.Count);
         ShuffleList(itemCounts);
-        List<FruitType> result = new List<FruitType>();
+        List<TypeTileId> result = new List<TypeTileId>();
         for (int i = 0; i < list.Count; i++)
         {
             for (int j = 0; j < itemCounts[i]; j++)
@@ -205,7 +212,7 @@ public class TileManager : MonoBehaviour
         {
             GameObject layerParent = new GameObject(nameParentLayer);
             m_LayerParent[orderInLayer] = layerParent.transform;
-            layerParent.transform.SetParent(this.transform);
+            layerParent.transform.SetParent(gamePlayTransform);
 
         }
 
@@ -233,7 +240,7 @@ public class TileManager : MonoBehaviour
                 tile.isSelected = false;
 
                 var fruit = GetDistributedFruitType();
-                tile.fruitType = fruit;
+                tile.typeTileId = fruit;
                 tile.spriteFruit.sprite = GetSpriteForFruitType(fruit);
                 if (tile.spriteFruit.sprite == null)
                 {
@@ -250,7 +257,7 @@ public class TileManager : MonoBehaviour
         return tiles;
     }
 
-    private FruitType GetDistributedFruitType()
+    private TypeTileId GetDistributedFruitType()
     {
 
         var fruit = m_DistributedTiles[tileIndex];
@@ -258,9 +265,9 @@ public class TileManager : MonoBehaviour
         return fruit;
     }
 
-    private Sprite GetSpriteForFruitType(FruitType type)
+    private Sprite GetSpriteForFruitType(TypeTileId typeTileId)
     {
-        if (m_SpriteLookup.TryGetValue(type, out Sprite sprite))
+        if (m_SpriteLookup.TryGetValue(typeTileId, out Sprite sprite))
         {
             return sprite;
         }
@@ -280,7 +287,7 @@ public class TileManager : MonoBehaviour
         }
     }
 
-    private FruitType GetFruitTypeFromSprite(Sprite sprite)
+    private TypeTileId GetFruitTypeFromSprite(Sprite sprite)
     {
         foreach (var kvp in m_SpriteLookup)
         {
@@ -288,7 +295,7 @@ public class TileManager : MonoBehaviour
                 return kvp.Key;
         }
 
-        return FruitType.None;
+        return TypeTileId.None;
     }
 
     public bool IsTileCovered(Tile tile)
@@ -325,7 +332,7 @@ public class TileManager : MonoBehaviour
     public void ShuffleTiles()
     {
         List<Tile> remainingTiles = new List<Tile>();
-        List<FruitType> remainingFruitTypes = new List<FruitType>();
+        List<TypeTileId> remainingFruitTypes = new List<TypeTileId>();
 
         foreach (var layers in m_LayerTiles.Values)
         {
@@ -337,8 +344,8 @@ public class TileManager : MonoBehaviour
                     if (tile != null && !tile.isSelected)
                     {
                         remainingTiles.Add(tile);
-                        FruitType type = GetFruitTypeFromSprite(tile.spriteFruit.sprite);
-                        remainingFruitTypes.Add(type);
+                        TypeTileId typeTileId = GetFruitTypeFromSprite(tile.spriteFruit.sprite);
+                        remainingFruitTypes.Add(typeTileId);
                     }
                 }
             }
@@ -351,7 +358,7 @@ public class TileManager : MonoBehaviour
             if (m_SpriteLookup.TryGetValue(remainingFruitTypes[i], out Sprite sprite))
             {
                 remainingTiles[i].spriteFruit.sprite = sprite;
-                remainingTiles[i].fruitType = remainingFruitTypes[i];
+                remainingTiles[i].typeTileId = remainingFruitTypes[i];
 
             }
         }
@@ -411,7 +418,7 @@ public class TileManager : MonoBehaviour
 
         if (collected.Count == 0)
         {
-            Dictionary<FruitType, List<Tile>> availableTiles = new();
+            Dictionary<TypeTileId, List<Tile>> availableTiles = new();
 
             foreach (var layers in m_LayerTiles.Values)
             {
@@ -422,20 +429,20 @@ public class TileManager : MonoBehaviour
                         Tile tile = layers[row, col];
                         if (tile != null && !tile.isSelected)
                         {
-                            if (!availableTiles.ContainsKey(tile.fruitType))
-                                availableTiles[tile.fruitType] = new List<Tile>();
+                            if (!availableTiles.ContainsKey(tile.typeTileId))
+                                availableTiles[tile.typeTileId] = new List<Tile>();
 
-                            availableTiles[tile.fruitType].Add(tile);
+                            availableTiles[tile.typeTileId].Add(tile);
                         }
                     }
                 }
             }
 
-            List<FruitType> validFruitTypes =
+            List<TypeTileId> validFruitTypes =
                 availableTiles.Where(kvp => kvp.Value.Count >= 3).Select(kvp => kvp.Key).ToList();
 
-            FruitType randomFruit = validFruitTypes[Random.Range(0, validFruitTypes.Count)];
-            List<Tile> selectedTiles = availableTiles[randomFruit];
+            TypeTileId random = validFruitTypes[Random.Range(0, validFruitTypes.Count)];
+            List<Tile> selectedTiles = availableTiles[random];
 
             ShuffleList(selectedTiles);
             List<Tile> result = selectedTiles.GetRange(0, 3);
@@ -444,11 +451,11 @@ public class TileManager : MonoBehaviour
             return;
         }
 
-        FruitType fruitType = collected[0].fruitType;
-        int countSlot = collected.Count(t => t.fruitType == fruitType);
+        TypeTileId typeTileId = collected[0].typeTileId;
+        int countSlot = collected.Count(t => t.typeTileId == typeTileId);
         int missingCount = 3 - countSlot;
 
-        List<Tile> remaining = FindTilesOfSameFruit(fruitType, missingCount);
+        List<Tile> remaining = FindTilesOfSameFruit(typeTileId, missingCount);
 
         if (remaining.Count == missingCount)
         {
@@ -457,7 +464,7 @@ public class TileManager : MonoBehaviour
     }
 
 
-    private List<Tile> FindTilesOfSameFruit(FruitType fruitType, int requiredCount = 3)
+    private List<Tile> FindTilesOfSameFruit(TypeTileId typeTileId, int requiredCount = 3)
     {
         List<Tile> result = new List<Tile>();
 
@@ -468,7 +475,7 @@ public class TileManager : MonoBehaviour
                 for (int col = 0; col < layers.GetLength(1); col++)
                 {
                     Tile tile = layers[row, col];
-                    if (tile != null && !tile.isSelected && tile.fruitType == fruitType)
+                    if (tile != null && !tile.isSelected && tile.typeTileId == typeTileId)
                     {
                         result.Add(tile);
 
@@ -481,6 +488,46 @@ public class TileManager : MonoBehaviour
 
         return result;
     }
+    public void ApplyTheme(TileThemeData theme)
+    {
+        if (theme == null || theme.spriteTile == null || theme.spriteTile.Count == 0)
+        {
+            Debug.LogWarning("Theme invalid!");
+            return;
+        }
+        
+        for (int i = 0; i < spriteDataList.Count; i++)
+        {
+            spriteDataList[i].sprite = theme.spriteTile[i];
+        }
+        m_SpriteLookup = new Dictionary<TypeTileId, Sprite>();
+        foreach (var data in spriteDataList)
+        {
+            if (!m_SpriteLookup.ContainsKey(data.typeTileId))
+            {
+                m_SpriteLookup.Add(data.typeTileId, data.sprite);
+            }
+        }
+        foreach (var layer in m_LayerTiles.Values)
+        {
+            for (int row = 0; row < layer.GetLength(0); row++)
+            {
+                for (int col = 0; col < layer.GetLength(1); col++)
+                {
+                    Tile tile = layer[row, col];
+                    if (tile != null)
+                    {
+                        if (m_SpriteLookup.TryGetValue(tile.typeTileId, out Sprite newSprite))
+                        {
+                            tile.spriteFruit.sprite = newSprite;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
 
 
 }

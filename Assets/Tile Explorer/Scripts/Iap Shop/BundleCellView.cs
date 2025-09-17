@@ -9,7 +9,7 @@ public class BundleCellView : EnhancedScrollerCellView,IShopCellView
 {
     public string id;
     public bool isPurchased;
-    public Image coin;
+    public Image iconCoin;
     public TMP_Text itemNameText;
     public TMP_Text priceText;
     public TMP_Text saleOffText;
@@ -29,9 +29,9 @@ public class BundleCellView : EnhancedScrollerCellView,IShopCellView
             id = bundleItemData.id;
             isPurchased = bundleItemData.isPurchase;
             this.data = bundleItemData;
-            coin.sprite = bundleItemData.icon;
+            iconCoin.sprite = bundleItemData.icon;
              itemNameText.text =(bundleItemData.title) + " Bundle";
-             priceText.text = ("₫" + bundleItemData.price.ToString("F"));
+             priceText.text = !bundleItemData.isPurchase ? "₫" + bundleItemData.price.ToString("F") : "Purchased";
              saleOffText.text =(bundleItemData.saleOff > 0 ? bundleItemData.saleOff + "% OFF" : "");
              quantityCoinText.text =("x" + bundleItemData.coin);
             quantityUndoText.text =("x" + bundleItemData.undo);
@@ -49,17 +49,18 @@ public class BundleCellView : EnhancedScrollerCellView,IShopCellView
         if (data is BundleItemData bundleData)
         {
             if (!id.Equals(bundleData.id)) return;
-            Debug.Log("dung id " + id);
             if (!isPurchased)
             {
-                Debug.Log("chua mua");
                 isPurchased = true;
+                ShopManager.Instance.SetStatusValues(bundleData.coin, bundleData.undo, bundleData.magicWand, bundleData.shuffle);
+                PlayScreen.Instance.SetFeatureValues(bundleData.undo, bundleData.magicWand, bundleData.shuffle);
                 bundleData.isPurchase = isPurchased;
             }
             else
             {
-                Debug.Log("da mua");
-
+                
+                //priceText.text = "Purchased";
+                
             }
         }
     }
