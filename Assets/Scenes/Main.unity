@@ -1584,7 +1584,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 621307859}
   sfxSource: {fileID: 501613536}
-  bgmVolume: 0.5
+  bgmVolume: 0
   sfxVolume: 1
 --- !u!4 &541074099
 Transform:
@@ -5080,6 +5080,10 @@ PrefabInstance:
     - target: {fileID: 7264577540213474795, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8193250926857104390, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

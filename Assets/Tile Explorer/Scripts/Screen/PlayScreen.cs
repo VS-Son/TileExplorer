@@ -10,7 +10,7 @@ public class PlayScreen : MonoBehaviour
 {
    public static event Action<int> CurrentLevel;
    public static PlayScreen Instance;
-   [Header("Features")] public GameObject boosters;
+   [Header("Boosters")] public GameObject boosters;
    [Header("Level Unlock")]
    [SerializeField] private int levelUnlockUndo;
    [SerializeField] private int levelUnlockMagicWand;
@@ -68,7 +68,7 @@ public class PlayScreen : MonoBehaviour
    private void Start()
    {
       undo.onClick.AddListener(OnUndo);
-      magicWand.onClick.AddListener(MagicWand);
+      magicWand.onClick.AddListener(OnMagicWand);
       shuffle.onClick.AddListener((OnShuffle));
    }
 
@@ -91,7 +91,6 @@ public class PlayScreen : MonoBehaviour
                   BoardTileCollector.Instance.UndoTiles(1);
                   textUndoCount.text = currentUndoCount.ToString();
                }
-
                if (adsUndo.activeSelf)
                {
                   BoardTileCollector.Instance.UndoTiles(1);
@@ -100,22 +99,8 @@ public class PlayScreen : MonoBehaviour
 
                if (coinUndo.activeSelf )
                {
-                  StatusBar.Instance.currentCoin -= 100;
+                  BadgeCoin(textCoinUndo, 100);
                   BoardTileCollector.Instance.UndoTiles(1);
-                  if (StatusBar.Instance.currentCoin < 100)
-                  {
-                     coinUndo.SetActive(false);
-                     adsUndo.SetActive(true);
-                  }if (StatusBar.Instance.currentCoin < 200)
-                  {
-                     coinShuffle.SetActive(false);
-                     adsShuffle.SetActive(true);
-                  }if (StatusBar.Instance.currentCoin < 300)
-                  {
-                     coinMagicWand.SetActive(false);
-                     adsMagicWand.SetActive(true);
-                  }
-                  
                }
 
 
@@ -152,7 +137,7 @@ public class PlayScreen : MonoBehaviour
 
    }
 
-   private void MagicWand()
+   private void OnMagicWand()
    {
       if (TileManager.Instance.currentLevel >= 3)
       {
@@ -170,21 +155,8 @@ public class PlayScreen : MonoBehaviour
 
          if (coinMagicWand.activeSelf)
          {
-            StatusBar.Instance.currentCoin -= 300;
+            BadgeCoin(textCoinMagicWand, 300);
             TileManager.Instance.CollectSameFruitTiles();
-            if (StatusBar.Instance.currentCoin < 100)
-            {
-               coinUndo.SetActive(false);
-               adsUndo.SetActive(true);
-            }if (StatusBar.Instance.currentCoin < 200)
-            {
-               coinShuffle.SetActive(false);
-               adsShuffle.SetActive(true);
-            }if (StatusBar.Instance.currentCoin < 300)
-            {
-               coinMagicWand.SetActive(false);
-               adsMagicWand.SetActive(true);
-            }
          }
          if(currentMagicWandCount < 1)
          {
@@ -227,22 +199,8 @@ public class PlayScreen : MonoBehaviour
 
          if (coinShuffle.activeSelf)
          {
-            StatusBar.Instance.currentCoin -= 200;
-            textCoinShuffle.text = 200.ToString();
+            BadgeCoin(textCoinShuffle, 200);
             TileManager.Instance.ShuffleTiles();
-            if (StatusBar.Instance.currentCoin < 100)
-            {
-               coinUndo.SetActive(false);
-               adsUndo.SetActive(true);
-            }if (StatusBar.Instance.currentCoin < 200)
-            {
-               coinShuffle.SetActive(false);
-               adsShuffle.SetActive(true);
-            }if (StatusBar.Instance.currentCoin < 300)
-            {
-               coinMagicWand.SetActive(false);
-               adsMagicWand.SetActive(true);
-            }
 
          }
          if(currentShuffleCount < 1)
@@ -270,7 +228,34 @@ public class PlayScreen : MonoBehaviour
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
    }
 
-   
+   private void BadgeCoin(TMP_Text textCoin, int valueCoin)
+   {
+      StatusBar.Instance.currentCoin -= valueCoin;
+      textCoin.text = valueCoin.ToString();
+      if (StatusBar.Instance.currentCoin < 100 && currentUndoCount < 1)
+      {
+         coinUndo.SetActive(false);
+         switch (BoardTileCollector.Instance.collectedTiles.Count)
+         {
+            case 0:
+               adsUndo.SetActive(false);
+               break;
+            case > 0:
+               adsUndo.SetActive(true);
+               break;
+         }
+         
+      }if (StatusBar.Instance.currentCoin < 200 &&  currentShuffleCount < 1)
+      {
+         coinShuffle.SetActive(false);
+         adsShuffle.SetActive(true);
+      }if (StatusBar.Instance.currentCoin < 300 && currentMagicWandCount < 1)
+      {
+         coinMagicWand.SetActive(false);
+         adsMagicWand.SetActive(true);
+      }
+   }
+
    private void ShowPopupRequirement(int level, NotificationType notificationType)
    {
       _moveTween?.Kill();
@@ -348,24 +333,59 @@ public class PlayScreen : MonoBehaviour
       }
    }
 
-   public void SetFeatureValues(int undoCount, int magicWandCount, int shuffleCount)
+   public void SetBoosterValues(int undoCount, int magicWandCount, int shuffleCount)
    {
-      if (StatusBar.Instance.currentCoin >= 100 && currentUndoCount < 1)
+      switch (StatusBar.Instance.currentCoin)
       {
-         coinUndo.SetActive(true);
-         textCoinUndo.text = 100.ToString();
+         case >= 100 when currentUndoCount < 1:
+            coinUndo.SetActive(true);
+            textCoinUndo.text = 100.ToString();
+            switch (BoardTileCollector.Instance.collectedTiles.Count)
+            {
+               case 0:
+                  adsUndo.SetActive(false);
+                  break;
+               case > 0:
+                  adsUndo.SetActive(true);
+                  break;
+            }
 
+            break;
+         case < 100 when currentUndoCount < 1:
+            switch (BoardTileCollector.Instance.collectedTiles.Count)
+            {
+               case 0:
+                  adsUndo.SetActive(false);
+                  break;
+               case > 0:
+                  adsUndo.SetActive(true);
+                  break;
+            }
+            break;
       }
-      if (StatusBar.Instance.currentCoin >= 300 && currentMagicWandCount < 1 )
+
+      switch (StatusBar.Instance.currentCoin)
       {
-          coinMagicWand.SetActive(true);
-          textCoinMagicWand.text = 300.ToString();
+         case >= 300 when currentMagicWandCount < 1:
+            coinMagicWand.SetActive(true);
+            textCoinMagicWand.text = 300.ToString();
+            adsMagicWand.SetActive(false);
+            break;
+         case < 300 when currentMagicWandCount < 1:
+            adsMagicWand.SetActive(true);
+            break;
       }
-        
-      if (StatusBar.Instance.currentCoin >= 200 && currentShuffleCount < 1)
+
+      switch (StatusBar.Instance.currentCoin)
       {
-         coinShuffle.SetActive(true);
-         textCoinShuffle.text = 200.ToString();
+         case >= 200 when currentShuffleCount < 1:
+            coinShuffle.SetActive(true);
+            textCoinShuffle.text = 200.ToString();
+            adsShuffle.SetActive(false);
+            break;
+         case < 200 when currentShuffleCount < 1:
+            adsShuffle.SetActive(true);
+            break;
       }
 
       if (undoCount >= 1)
@@ -387,9 +407,9 @@ public class PlayScreen : MonoBehaviour
          coinShuffle.SetActive(false);
       }
       
-      adsUndo.SetActive(false);
-      adsMagicWand.SetActive(false);
-      adsShuffle.SetActive(false);
+      // adsUndo.SetActive(false);
+      // adsMagicWand.SetActive(false);
+      // adsShuffle.SetActive(false);
       
       currentUndoCount += undoCount;
       currentMagicWandCount += magicWandCount;

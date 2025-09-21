@@ -53,7 +53,7 @@ public class BundleCellView : EnhancedScrollerCellView,IShopCellView
             {
                 isPurchased = true;
                 ShopManager.Instance.SetStatusValues(bundleData.coin, bundleData.undo, bundleData.magicWand, bundleData.shuffle);
-                PlayScreen.Instance.SetFeatureValues(bundleData.undo, bundleData.magicWand, bundleData.shuffle);
+                PlayScreen.Instance.SetBoosterValues(bundleData.undo, bundleData.magicWand, bundleData.shuffle);
                 bundleData.isPurchase = isPurchased;
             }
             else

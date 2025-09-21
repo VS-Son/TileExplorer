@@ -40,7 +40,7 @@ public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView
         {
             if (!id.Equals(coinData.id)) return;
             ShopManager.Instance.SetStatusValues(coinData.coin, 0, 0 ,0);
-            PlayScreen.Instance.SetFeatureValues( 0, 0 ,0);
+            PlayScreen.Instance.SetBoosterValues( 0, 0 ,0);
         }
     }
 }
