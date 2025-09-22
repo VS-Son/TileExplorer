@@ -5572,7 +5572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2431760356785374370, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
       propertyPath: levelUnlockMagicWand
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3813049241588735328, guid: 7d22ad250b68fff469b66ca931e72048, type: 3}
       propertyPath: m_AnchoredPosition.x
