@@ -75,7 +75,7 @@ public class PlayScreen : MonoBehaviour
 
    private void OnUndo()
    {
-      if (TileManager.Instance.currentLevel > 1)
+      if (TileManager.Instance.currentLevel > levelUnlockUndo)
       {
          switch (BoardTileCollector.Instance.collectedTiles.Count)
          {
@@ -139,7 +139,7 @@ public class PlayScreen : MonoBehaviour
 
    private void OnMagicWand()
    {
-      if (TileManager.Instance.currentLevel >= 3)
+      if (TileManager.Instance.currentLevel >= levelUnlockMagicWand)
       {
          if (currentMagicWandCount >= 1)
          {
@@ -183,7 +183,7 @@ public class PlayScreen : MonoBehaviour
 
    private void OnShuffle()
    {
-      if (TileManager.Instance.currentLevel >= 3)
+      if (TileManager.Instance.currentLevel >= levelUnlockShuffle)
       {
          if (currentShuffleCount >= 1)
          {
