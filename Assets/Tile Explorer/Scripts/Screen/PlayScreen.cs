@@ -75,7 +75,7 @@ public class PlayScreen : MonoBehaviour
 
    private void OnUndo()
    {
-      if (TileManager.Instance.currentLevel > levelUnlockUndo)
+      if (TileManager.Instance.currentLevel >= levelUnlockUndo)
       {
          switch (BoardTileCollector.Instance.collectedTiles.Count)
          {
@@ -131,7 +131,7 @@ public class PlayScreen : MonoBehaviour
       }
       else
       {
-         ShowPopupRequirement(2, NotificationType.Level);
+         ShowPopupRequirement(levelUnlockUndo, NotificationType.Level);
       }
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
 
@@ -176,7 +176,7 @@ public class PlayScreen : MonoBehaviour
       }
       else
       {
-         ShowPopupRequirement(4, NotificationType.Level );
+         ShowPopupRequirement(levelUnlockMagicWand, NotificationType.Level );
       }
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
    }
@@ -221,7 +221,7 @@ public class PlayScreen : MonoBehaviour
       }
       else
       {
-         ShowPopupRequirement(3, NotificationType.Level);
+         ShowPopupRequirement(levelUnlockShuffle, NotificationType.Level);
          
       }
 
