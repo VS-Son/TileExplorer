@@ -6,7 +6,7 @@ using System;
 using DG.Tweening;
 public class Tile : MonoBehaviour, IPointerClickHandler
 {
-    public SpriteRenderer spriteFruit;
+    public SpriteRenderer spriteTile;
     public SpriteRenderer background;
     public TypeTileId typeTileId;
 
@@ -14,17 +14,18 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     public int row;
     public int currentLayer;
     public TileManager tileManager;
-    public bool isSelected;
+    public bool isCollected;
+    public bool isSelect;
     public Collider2D collider2d;
     
     public Vector2 originalPosition;
     public int originalLayer;
 
     private bool _isShaking;
-
+    
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (TileManager.Instance.IsTileCovered(this))
+        if (!TileManager.Instance.IsTileCovered(this))
         {
             if(_isShaking)return;      
             _isShaking = true;
@@ -41,11 +42,13 @@ public class Tile : MonoBehaviour, IPointerClickHandler
             }));
             return;
         }
+      //  tileManager.UpdateNearbyTiles(this);
         AudioManager.Instance.PlaySfx("touch");
-        isSelected = true;
+        isCollected = true;
         collider2d.enabled = false;
         //Debug.Log($"Clicked tile Layer {currentLayer}");
         BoardTileCollector.Instance.AddTileObject(this);
+        
     }
     
 }

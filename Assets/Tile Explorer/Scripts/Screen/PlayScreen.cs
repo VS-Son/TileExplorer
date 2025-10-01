@@ -335,34 +335,43 @@ public class PlayScreen : MonoBehaviour
 
    public void SetBoosterValues(int undoCount, int magicWandCount, int shuffleCount)
    {
-      switch (StatusBar.Instance.currentCoin)
+      if (currentUndoCount > 1)
       {
-         case >= 100 when currentUndoCount < 1:
-            coinUndo.SetActive(true);
-            textCoinUndo.text = 100.ToString();
-            switch (BoardTileCollector.Instance.collectedTiles.Count)
-            {
-               case 0:
-                  adsUndo.SetActive(false);
-                  break;
-               case > 0:
-                  adsUndo.SetActive(true);
-                  break;
-            }
-
-            break;
-         case < 100 when currentUndoCount < 1:
-            switch (BoardTileCollector.Instance.collectedTiles.Count)
-            {
-               case 0:
-                  adsUndo.SetActive(false);
-                  break;
-               case > 0:
-                  adsUndo.SetActive(true);
-                  break;
-            }
-            break;
+         adsUndo.SetActive(false);
+         coinUndo.SetActive(false);
       }
+      else
+      {
+         switch (StatusBar.Instance.currentCoin)
+               {
+                  case >= 100 when currentUndoCount < 1:
+                     coinUndo.SetActive(true);
+                     textCoinUndo.text = 100.ToString();
+                     switch (BoardTileCollector.Instance.collectedTiles.Count)
+                     {
+                        case 0:
+                           adsUndo.SetActive(false);
+                           break;
+                        case > 0:
+                           adsUndo.SetActive(true);
+                           break;
+                     }
+         
+                     break;
+                  case < 100 when currentUndoCount < 1:
+                     switch (BoardTileCollector.Instance.collectedTiles.Count)
+                     {
+                        case 0:
+                           adsUndo.SetActive(false);
+                           break;
+                        case > 0:
+                           adsUndo.SetActive(true);
+                           break;
+                     }
+                     break;
+               }
+      }
+      
 
       switch (StatusBar.Instance.currentCoin)
       {

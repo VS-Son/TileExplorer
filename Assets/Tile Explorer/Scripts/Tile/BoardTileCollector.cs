@@ -54,7 +54,7 @@ public class BoardTileCollector : MonoBehaviour
         collectedTiles.Add(tile);
         originalTile.Add(tile);
 
-        tile.spriteFruit.sortingOrder = 10;
+        tile.spriteTile.sortingOrder = 10;
         tile.background.sortingOrder = 9;
 
         Debug.Log("Count " + collectedTiles.Count);
@@ -298,7 +298,7 @@ public class BoardTileCollector : MonoBehaviour
 
     private bool CheckTilesSelected()
     {
-        var layerGrids = TileManager.Instance.m_LayerTiles;
+        var layerGrids = TileManager.Instance.LayerTiles;
         int countLayer = 0;
         foreach (var grid in layerGrids.Values)
         {
@@ -308,7 +308,7 @@ public class BoardTileCollector : MonoBehaviour
                 {
                     Tile tile = grid[row, col];
                    
-                    if (tile != null && !tile.isSelected)
+                    if (tile != null && !tile.isCollected)
                     {
                        
                         return false;
@@ -356,9 +356,9 @@ public class BoardTileCollector : MonoBehaviour
                 Debug.Log("Undo");
             }));
             tile.currentLayer = tile.originalLayer;
-            tile.spriteFruit.sortingOrder = tile.originalLayer;
+            tile.spriteTile.sortingOrder = tile.originalLayer;
             tile.background.sortingOrder = tile.originalLayer - 1;
-            tile.isSelected = false;
+            tile.isCollected = false;
             tile.collider2d.enabled = true;
             tile.transform.SetParent(null);
             tile.collider2d.enabled = true;

@@ -131,14 +131,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4810e5e871cc2d740b0caddc39698c62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteFruit: {fileID: 8963591327659512803}
+  spriteTile: {fileID: 8963591327659512803}
   background: {fileID: 6635643486094280317}
-  fruitType: 0
+  typeTileId: 0
   col: 0
   row: 0
   currentLayer: 0
   tileManager: {fileID: 0}
-  isSelected: 0
+  isCollected: 0
+  isSelect: 0
   collider2d: {fileID: 4011856131546850636}
   originalPosition: {x: 0, y: 0}
   originalLayer: 0
