@@ -25,24 +25,22 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!TileManager.Instance.IsTileCovered(this))
+        TileManager.Instance.UpdateTileSelect(this);
+        if (!isSelect)
         {
-            if(_isShaking)return;      
+            if (_isShaking) return;
             _isShaking = true;
             transform.DOShakePosition(
                 duration: 0.3f,
                 strength: new Vector3(0.1f, 0f, 0f),
                 vibrato: 10,
-                randomness: 0f, 
+                randomness: 0f,
                 snapping: false,
                 fadeOut: true
-            ).OnComplete((() =>
-            {
-                _isShaking = false;
-            }));
+            ).OnComplete((() => { _isShaking = false; }));
             return;
         }
-      //  tileManager.UpdateNearbyTiles(this);
+
         AudioManager.Instance.PlaySfx("touch");
         isCollected = true;
         collider2d.enabled = false;

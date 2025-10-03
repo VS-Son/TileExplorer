@@ -995,7 +995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 318d19d8bbeed1f439f3c72b49b1e649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevel: 1
+  currentLevel: 2
   tileJson: {fileID: 4900000, guid: 84d353d35d78e78448c853e22e58e172, type: 3}
   tilePrefab: {fileID: 7158199456839636788, guid: a127b3c0d94bb1e418f1b4ca627b67ae, type: 3}
   spriteDataList:

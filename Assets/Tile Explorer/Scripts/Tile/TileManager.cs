@@ -352,37 +352,66 @@ public class TileManager : MonoBehaviour
     //     return false;
     // }
 
-    public bool IsTileCovered(Tile tile)
+    public void UpdateTileSelect(Tile tile)
     {
         int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
-        if (tile.isSelect)
-        {
+       
             foreach (var layer in LayerTiles)
             {
-                Tile[,] layerLow = layer.Value;
+                Tile[,] grid = layer.Value;
                 for (int i = 0; i < offsets.GetLength(0); i++)
                 {
                     int checkCol = tile.col + offsets[i, 0];
                     int checkRow = tile.row + offsets[i, 1];
-    
-                    if (checkCol >= 0 && checkRow >= 0)
+
+                    if (checkCol >= 0 && checkCol < grid.GetLength(0) &&
+                        checkRow >= 0 && checkRow < grid.GetLength(1))
                     {
-                        Tile coveringTile = layerLow[checkCol, checkRow];
-                        if (coveringTile != null)
+                        Tile lowerTile = grid[checkCol, checkRow];
+                        if (lowerTile != null && !lowerTile.isCollected)
                         {
-                            coveringTile.isSelect = true;
+                            if (!IsTileCovered(lowerTile))
+                            {
+                                lowerTile.isSelect = true;
+                                lowerTile.spriteTile.color = Color.white;
+                            }
                         }
-    
+                    }
+                }
+            }
+
+    }
+
+    private bool IsTileCovered(Tile tile)
+    {
+        int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
+
+        foreach (var layer in LayerTiles)
+        {
+            int higherLayer = layer.Key;
+            if (higherLayer <= tile.currentLayer) continue; 
+
+            Tile[,] higherGrid = layer.Value;
+            for (int i = 0; i < offsets.GetLength(0); i++)
+            {
+                int checkCol = tile.col - offsets[i, 0];
+                int checkRow = tile.row - offsets[i, 1];
+
+                if (checkCol >= 0 && checkCol < higherGrid.GetLength(0) &&
+                    checkRow >= 0 && checkRow < higherGrid.GetLength(1))
+                {
+                    Tile coveringTile = higherGrid[checkCol, checkRow];
+                    if (coveringTile != null && !coveringTile.isCollected)
+                    {
+                        return true; 
                     }
                 }
             }
         }
-        else
-        {
-            return false;
-        }
-        return true;
+        return false; 
     }
+
+
     public void ShuffleTiles()
     {
         List<Tile> remainingTiles = new List<Tile>();
