@@ -1659,7 +1659,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSource: {fileID: 621307859}
   sfxSource: {fileID: 501613536}
-  bgmVolume: 1
+  bgmVolume: 0
   sfxVolume: 1
 --- !u!4 &541074099
 Transform:

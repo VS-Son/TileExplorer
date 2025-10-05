@@ -334,8 +334,9 @@ public class BoardTileCollector : MonoBehaviour
 
     public void UndoTiles(int numTiles)
     {
+        int countNumberOfTimeUndo = 0;
         int count = Mathf.Min(numTiles, originalTile.Count);
-
+        countNumberOfTimeUndo++;
         for (int i = 0; i < count; i++)
         {
             int index = originalTile.Count - 1 - i;
@@ -353,7 +354,7 @@ public class BoardTileCollector : MonoBehaviour
                     TileManager.Instance.ShuffleTiles();
                     Debug.Log("Shuffle");
                 }
-                Debug.Log("Undo");
+                Debug.Log("Undo" + countNumberOfTimeUndo);
             }));
             tile.currentLayer = tile.originalLayer;
             tile.spriteTile.sortingOrder = tile.originalLayer;
@@ -363,6 +364,7 @@ public class BoardTileCollector : MonoBehaviour
             tile.transform.SetParent(null);
             tile.collider2d.enabled = true;
             TileManager.Instance.SetLayer(tile, tile.originalLayer);
+            TileManager.Instance.UpdateTileSelect(tile);
             collectedTiles.Remove(tile);
 
         }

@@ -25,7 +25,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler
     
     public void OnPointerClick(PointerEventData eventData)
     {
-        TileManager.Instance.UpdateTileSelect(this);
+        
         if (!isSelect)
         {
             if (_isShaking) return;
@@ -37,16 +37,16 @@ public class Tile : MonoBehaviour, IPointerClickHandler
                 randomness: 0f,
                 snapping: false,
                 fadeOut: true
-            ).OnComplete((() => { _isShaking = false; }));
+            ).OnComplete(() => { _isShaking = false; });
             return;
         }
 
         AudioManager.Instance.PlaySfx("touch");
         isCollected = true;
         collider2d.enabled = false;
-        //Debug.Log($"Clicked tile Layer {currentLayer}");
+        TileManager.Instance.UpdateTileSelect(this);
         BoardTileCollector.Instance.AddTileObject(this);
-        
     }
+
     
 }

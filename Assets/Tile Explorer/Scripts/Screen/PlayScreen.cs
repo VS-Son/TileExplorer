@@ -144,19 +144,19 @@ public class PlayScreen : MonoBehaviour
          if (currentMagicWandCount >= 1)
          {
             currentMagicWandCount--;
-             TileManager.Instance.CollectSameFruitTiles();
+             TileManager.Instance.CollectSameTiles();
              textMagicWandCount.text = currentMagicWandCount.ToString();
          }
 
          if (adsMagicWand.activeSelf)
          {
-            TileManager.Instance.CollectSameFruitTiles();
+            TileManager.Instance.CollectSameTiles();
          }
 
          if (coinMagicWand.activeSelf)
          {
             BadgeCoin(textCoinMagicWand, 300);
-            TileManager.Instance.CollectSameFruitTiles();
+            TileManager.Instance.CollectSameTiles();
          }
          if(currentMagicWandCount < 1)
          {

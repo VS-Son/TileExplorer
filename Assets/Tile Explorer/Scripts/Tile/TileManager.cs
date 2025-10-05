@@ -138,10 +138,10 @@ public class TileManager : MonoBehaviour
     {
         _distributedTiles = GenerateDistributedTiles(totalIndex, _listFruit);
         ShuffleList(_distributedTiles);
-        foreach (var fruitType in _distributedTiles)
+        foreach (var tileType in _distributedTiles)
         {
-            if (!_countTileId.ContainsKey(fruitType)) _countTileId[fruitType] = 0;
-            _countTileId[fruitType]++;
+            if (!_countTileId.ContainsKey(tileType)) _countTileId[tileType] = 0;
+            _countTileId[tileType]++;
         }
 
         // foreach (var kv in m_Count)
@@ -197,16 +197,14 @@ public class TileManager : MonoBehaviour
         Tile[,] tiles = new Tile[cols, rows];
         float offset = (rows - 1) * spacingToLoad / 2f;
         float offsetY = (cols - 1) * spacingToLoad / 2f;
-        GameObject layerParent = null;
         if (!_layerParent.ContainsKey(orderInLayer))
         {
-            layerParent = new GameObject(nameParentLayer);
+            var layerParent = new GameObject(nameParentLayer);
             _layerParent[orderInLayer] = layerParent.transform;
             layerParent.transform.SetParent(gamePlayTransform);
 
         }
 
-        int maxLayer = 0;
         for (int colY = 0; colY < tiles.GetLength(0); colY++)
         {
             for (int rowX = 0; rowX < tiles.GetLength(1); rowX++)
@@ -228,12 +226,12 @@ public class TileManager : MonoBehaviour
                 tile.tileManager = this;
                 tile.isCollected = false;
 
-                var fruit = GetDistributedFruitType();
-                tile.typeTileId = fruit;
-                tile.spriteTile.sprite = GetSpriteForFruitType(fruit);
+                var tileType = GetDistributedTileType();
+                tile.typeTileId = tileType;
+                tile.spriteTile.sprite = GetSpriteForTileType(tileType);
                 if (tile.spriteTile.sprite == null)
                 {
-                    Debug.LogWarning($"Sprite null for fruitType: {fruit}");
+                    Debug.LogWarning($"Sprite null for tileType: {tileType}");
                 }
 
                 // if (!IsTileCovered(tile))
@@ -266,7 +264,8 @@ public class TileManager : MonoBehaviour
                             if (higherLayer > tile.currentLayer)
                             {
                                 tile.isSelect = false;
-                                tile.spriteTile.color = Color.black;
+                                 tile.spriteTile.color = tile.background.color = SetAlphaSprite(150);
+                                
                             }
                             else
                             {
@@ -279,15 +278,15 @@ public class TileManager : MonoBehaviour
         }
     }
     
-    private TypeTileId GetDistributedFruitType()
+    private TypeTileId GetDistributedTileType()
     {
 
-        var fruit = _distributedTiles[tileIndex];
+        var tileType = _distributedTiles[tileIndex];
         tileIndex++;
-        return fruit;
+        return tileType;
     }
 
-    private Sprite GetSpriteForFruitType(TypeTileId typeTileId)
+    private Sprite GetSpriteForTileType(TypeTileId typeTileId)
     {
         if (_spriteLookup.TryGetValue(typeTileId, out Sprite sprite))
         {
@@ -355,47 +354,47 @@ public class TileManager : MonoBehaviour
     public void UpdateTileSelect(Tile tile)
     {
         int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
-       
+        if (tile.isSelect)
+        {
             foreach (var layer in LayerTiles)
             {
-                Tile[,] grid = layer.Value;
+                Tile[,] lowerLayer = layer.Value;
                 for (int i = 0; i < offsets.GetLength(0); i++)
                 {
                     int checkCol = tile.col + offsets[i, 0];
                     int checkRow = tile.row + offsets[i, 1];
 
-                    if (checkCol >= 0 && checkCol < grid.GetLength(0) &&
-                        checkRow >= 0 && checkRow < grid.GetLength(1))
+                    if (checkCol >= 0 && checkCol < lowerLayer.GetLength(0) &&
+                        checkRow >= 0 && checkRow < lowerLayer.GetLength(1))
                     {
-                        Tile lowerTile = grid[checkCol, checkRow];
-                        if (lowerTile != null && !lowerTile.isCollected)
+                        Tile lowerTile = lowerLayer[checkCol, checkRow];
+                        if (lowerTile != null)
                         {
-                            if (!IsTileCovered(lowerTile))
-                            {
-                                lowerTile.isSelect = true;
-                                lowerTile.spriteTile.color = Color.white;
-                            }
+                            bool blocked = IsTileCovered(offsets,lowerTile);
+                            lowerTile.isSelect = !blocked;
+                            lowerTile.spriteTile.color = lowerTile.background.color = (lowerTile.isSelect ? SetAlphaSprite( 255) : SetAlphaSprite(150) );
+                             
                         }
                     }
                 }
             }
-
+        }
+       
     }
 
-    private bool IsTileCovered(Tile tile)
+    private bool  IsTileCovered(int[,] offsets, Tile lowerTile)
     {
-        int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
 
         foreach (var layer in LayerTiles)
         {
             int higherLayer = layer.Key;
-            if (higherLayer <= tile.currentLayer) continue; 
+            if (higherLayer <= lowerTile.currentLayer) continue;
 
             Tile[,] higherGrid = layer.Value;
             for (int i = 0; i < offsets.GetLength(0); i++)
             {
-                int checkCol = tile.col - offsets[i, 0];
-                int checkRow = tile.row - offsets[i, 1];
+                int checkCol = lowerTile.col - offsets[i, 0];
+                int checkRow = lowerTile.row - offsets[i, 1];
 
                 if (checkCol >= 0 && checkCol < higherGrid.GetLength(0) &&
                     checkRow >= 0 && checkRow < higherGrid.GetLength(1))
@@ -408,14 +407,20 @@ public class TileManager : MonoBehaviour
                 }
             }
         }
-        return false; 
+
+        return false;
     }
 
-
+    private Color SetAlphaSprite(int rgb)
+    {
+        float value = rgb / 255f;
+        var color = new Color(value,value,value, 1f);
+        return color;
+    }
     public void ShuffleTiles()
     {
         List<Tile> remainingTiles = new List<Tile>();
-        List<TypeTileId> remainingFruitTypes = new List<TypeTileId>();
+        List<TypeTileId> remainingTileTypes = new List<TypeTileId>();
 
         foreach (var layers in LayerTiles.Values)
         {
@@ -428,20 +433,20 @@ public class TileManager : MonoBehaviour
                     {
                         remainingTiles.Add(tile);
                         TypeTileId typeTileId = GetFruitTypeFromSprite(tile.spriteTile.sprite);
-                        remainingFruitTypes.Add(typeTileId);
+                        remainingTileTypes.Add(typeTileId);
                     }
                 }
             }
         }
 
-        ShuffleList(remainingFruitTypes);
+        ShuffleList(remainingTileTypes);
 
         for (int i = 0; i < remainingTiles.Count; i++)
         {
-            if (_spriteLookup.TryGetValue(remainingFruitTypes[i], out Sprite sprite))
+            if (_spriteLookup.TryGetValue(remainingTileTypes[i], out Sprite sprite))
             {
                 remainingTiles[i].spriteTile.sprite = sprite;
-                remainingTiles[i].typeTileId = remainingFruitTypes[i];
+                remainingTiles[i].typeTileId = remainingTileTypes[i];
 
             }
         }
@@ -495,7 +500,7 @@ public class TileManager : MonoBehaviour
         tile.transform.SetParent(_layerParent[layer]);
     }
 
-    public void CollectSameFruitTiles()
+    public void CollectSameTiles()
     {
         List<Tile> collected = BoardTileCollector.Instance.GetCollectedTiles();
 
@@ -521,10 +526,10 @@ public class TileManager : MonoBehaviour
                 }
             }
 
-            List<TypeTileId> validFruitTypes =
+            List<TypeTileId> validTileTypes =
                 availableTiles.Where(kvp => kvp.Value.Count >= 3).Select(kvp => kvp.Key).ToList();
 
-            TypeTileId random = validFruitTypes[Random.Range(0, validFruitTypes.Count)];
+            TypeTileId random = validTileTypes[Random.Range(0, validTileTypes.Count)];
             List<Tile> selectedTiles = availableTiles[random];
 
             ShuffleList(selectedTiles);
