@@ -41,7 +41,7 @@ public class RemoveAdsCellView : EnhancedScrollerCellView,IShopCellView
             {
                 Debug.Log("not purchased");
                 isPurchased = true;
-                ShopManager.Instance.SetStatusValues(removeAdsData.coin, 0,0,0);
+                UIManager.Instance.GetUI<ShopScreen>().SetStatusValues(removeAdsData.coin, 0,0,0);
                 removeAdsData.isPurchase = isPurchased;
             }
             else

@@ -6,9 +6,8 @@ using System.Linq;
 using DG.Tweening;
 
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>
 {
-   public static AudioManager Instance;
    [Header("Audio")]
    public AudioSource bgmSource;
    public AudioSource sfxSource;
@@ -16,20 +15,13 @@ public class AudioManager : MonoBehaviour
    [Range(0f, 1f)] public float bgmVolume = 0.5f;
    [Range(0f, 1f)] public float sfxVolume = 1f;
    
-   private Dictionary<string, AudioClip> audioClips = new Dictionary<string, AudioClip>();
+   private readonly Dictionary<string, AudioClip> _audioClips = new Dictionary<string, AudioClip>();
 
    private void Awake()
    {
-      if (Instance != null && Instance != this)
-      {
-         Destroy(this);
-      }
-      else
-      {
-         Instance = this;
-         LoadAllSfx();
-      }
+      LoadAllSfx();
    }
+
    void Start()
    {
       sfxSource.volume = sfxVolume;
@@ -42,7 +34,7 @@ public class AudioManager : MonoBehaviour
       {
          var name = clip.name.ToLower();
          Debug.LogWarning("AudioManager Loaded: " + name);
-         audioClips[name] = clip;
+         _audioClips[name] = clip;
 
       }
    }
@@ -50,7 +42,7 @@ public class AudioManager : MonoBehaviour
    public void PlayBgm(string nameBgm, float duration)
    {
       nameBgm = nameBgm.ToLower();
-      if (audioClips.TryGetValue(nameBgm, out  var clip))
+      if (_audioClips.TryGetValue(nameBgm, out  var clip))
       {
           bgmSource.clip = clip;
           bgmSource.loop = true;
@@ -74,7 +66,7 @@ public class AudioManager : MonoBehaviour
    {
       name = name.ToLower();
 
-      if (audioClips.TryGetValue(name, out var clip))
+      if (_audioClips.TryGetValue(name, out var clip))
       {
          sfxSource.PlayOneShot(clip,sfxVolume);
       }

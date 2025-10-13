@@ -12,20 +12,15 @@ using Slider = UnityEngine.UI.Slider;
 using UnityEngine.Playables;
 using Image = UnityEngine.UI.Image;
 
-public class NextScreen : MonoBehaviour
+public class NextScreen : UICanvas
 {
    [Header("Button")]
    [SerializeField] private Button buttonNextLevel;
-   [SerializeField] private Button buttonSetting;
    [Header("Text")]
    [SerializeField] private TMP_Text textCompleteLevel;
    [SerializeField] private TMP_Text textNextLevel;
    [SerializeField] private TMP_Text textProvence;
    [SerializeField] private TMP_Text quantityText;                  
-   [Header("Screen")]
-   [SerializeField] private PlayScreen playScreen;
-   [Header("Object Locked")]
-   [SerializeField] private GameObject lockedUndo, lockedMagicWand, lockedShuffle;
    [Header("Progression")]
    [SerializeField] private Slider slider;
    [Header("Animator")]
@@ -39,20 +34,16 @@ public class NextScreen : MonoBehaviour
    private int scoreQuantity = 30;
    private int _countProgression = 0;
    private int _nextLevel;
-
-   private void Start()
-   {
-      buttonNextLevel.onClick.AddListener((OnNextLevel));
-   }
+   
    private void OnEnable()
    {
       BoardTileCollector.completeLevel += CompleteLevel;
-      CoinEffect.onCompleteGoal += OnCompleteGoal;
+      CoinEffect.OnCompleteGoal += OnCompleteGoal;
    }
    private void OnDisable()
    {
       BoardTileCollector.completeLevel -= CompleteLevel;
-      CoinEffect.onCompleteGoal -= OnCompleteGoal;
+      CoinEffect.OnCompleteGoal -= OnCompleteGoal;
 
    }
    
@@ -63,17 +54,13 @@ public class NextScreen : MonoBehaviour
       textNextLevel.text = "Level " + (_nextLevel + 1);
    }
 
-   private void OnNextLevel()
+   public void OnNextLevel()
    {
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-      StatusBar.Instance.textLevel.text = "Level" + (_nextLevel + 1);
-      playScreen.UnlockFeature(_nextLevel + 1);
-      BoardTileCollector.Instance.gameObject.SetActive(true);
-      playScreen.boosters.gameObject.SetActive(true);
-      this.gameObject.SetActive(false);
-      StatusBar.Instance.home.gameObject.SetActive(true);
-      StatusBar.Instance.statusCoin.SetActive(true);
-      StatusBar.Instance.textLevel.gameObject.SetActive(true);
+      UIManager.Instance.GetUI<StatusBar>().textLevel.text = "Level" + (_nextLevel + 1);
+      UIManager.Instance.GetUI<PlayScreen>().UnlockFeature(_nextLevel + 1);
+      GameManager.ChangeState(GameState.PlayScreen);
+      CloseDirectly();
       TileManager.Instance.NextLevel();
       if (_countProgression.Equals(0))
       {
@@ -87,21 +74,30 @@ public class NextScreen : MonoBehaviour
       }
       
    }
-   
+
    public void ProgressionRewards()
    {
-      _countProgression++;
+      UpdateProgressionData();
+      UpdateProgressionUI();
+      // Debug.LogError(count);
+   }
+
+   private void UpdateProgressionData()
+   {
+      _countProgression = Mathf.Min(_countProgression + 1, 4);
+      var count = slider.maxValue / 4f;
+      float targetValue = Mathf.Min(slider.value + count, slider.maxValue);
+      StartCoroutine(FillSlider(slider.value, targetValue, 0.5f));
+   }
+
+   private void UpdateProgressionUI()
+   {
       textProvence.text = $"Provence {_countProgression}/4";
       buttonNextLevel.gameObject.SetActive(false);
-         buttonNextLevel.transform.localScale = Vector2.zero;
-         buttonNextLevel.enabled = false;
-         var count = slider.maxValue / 4f;
-      float targetValue = Mathf.Min(slider.value + count, slider.maxValue);
-
-      StartCoroutine(FillSlider(slider.value, targetValue, 0.5f)); 
-      
-     // Debug.LogError(count);
+      buttonNextLevel.transform.localScale = Vector2.zero;
+      buttonNextLevel.enabled = false;
    }
+
 
    IEnumerator FillSlider(float from, float to, float duration)
    {
@@ -175,5 +171,6 @@ public class NextScreen : MonoBehaviour
       });
    }
 
-   
+
+  
 }

@@ -6,28 +6,22 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using DG.Tweening;
 
-public class HomeScreen : MonoBehaviour
+public class HomeScreen : UICanvas
 {
-    [SerializeField] private PlayScreen gamePlay;
-    [SerializeField] private Button onStart;
+    public static event Action OnActive; 
+    [SerializeField] private Transform onPlay;
     [SerializeField] private TMPro.TMP_Text textCurrentLevel;
-    [SerializeField] private GameObject tileManager;
-    [SerializeField] private GameObject tileCollector;
-    [SerializeField] private SettingsScreen settingsScreen;
     [SerializeField] private List<RectTransform> tileEffect = new List<RectTransform>();
     [SerializeField] private Image bannerExplorer;
     private int _currentLevel = 1;
     private void Start()
     {
-        onStart.onClick.AddListener((OnStart));
         foreach (var tileIndex in tileEffect)
         {
             tileIndex.transform.localScale = new Vector3(0, 0);
         }
-        onStart.transform.localScale = Vector3.zero;
-
+        onPlay.localScale = Vector3.zero;
         StartCoroutine(ScaleTilesSequentially());
-        StatusBar.Instance.home.gameObject.SetActive(false);
     }
 
     IEnumerator ScaleTilesSequentially(int index = 0)
@@ -55,21 +49,16 @@ public class HomeScreen : MonoBehaviour
             bannerExplorer.fillAmount = clampedTime;
             yield return new WaitForSeconds(duration);
         }
-        onStart.transform.DOScale(1, 0.4f);
+        onPlay.DOScale(1, 0.4f);
     }
 
-    private void OnStart()
+    public void OnPlay()
     {
-        StatusBar.Instance.statusCoin.SetActive(true);
-        StatusBar.Instance.textLevel.gameObject.SetActive(true);
-        StatusBar.Instance.textLevel.text = "Level" + _currentLevel;
-        TileManager.Instance.gamePlayTransform.gameObject.SetActive(true);
-        gamePlay.boosters.gameObject.SetActive(true);
-        tileCollector.gameObject.SetActive(true);
-        this.gameObject.SetActive(false);
+       UIManager.Instance.GetUI<StatusBar>().SetActiveStatus(true);
+        UIManager.Instance.GetUI<StatusBar>().textLevel.text = "Level" + _currentLevel;
+        GameManager.ChangeState(GameState.PlayScreen);
         DOVirtual.DelayedCall(0.3f, () => { AudioManager.Instance.PlayBgm("bgm", 3f); });
         AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-        StatusBar.Instance.home.gameObject.SetActive(true);
     }
 
     private void OnEnable()

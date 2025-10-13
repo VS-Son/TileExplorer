@@ -8,10 +8,9 @@ public class CountdownTime : MonoBehaviour
     [SerializeField] private Image fillTimer;
     [SerializeField] private TMP_Text timer;
     [SerializeField] private RectTransform handle;
-
     [SerializeField] private float handleRadius = 100f;
-
-    public IEnumerator UpdateTimer(float duration, GameObject screen)
+    
+    public IEnumerator UpdateTimer(float duration)
     {
         float remainingDuration = duration;
 
@@ -34,8 +33,9 @@ public class CountdownTime : MonoBehaviour
 
             yield return null;
         }
-
-        screen.SetActive(false);
+        
+        GameManager.ChangeState(GameState.PlayScreen);
+        UIManager.Instance.GetUI<ReviveScreen>().CloseDirectly();
         TileManager.Instance.ResetTile(TileManager.Instance.currentLevel);
     }
 }

@@ -7,18 +7,11 @@ using DG.Tweening;
 using UnityEngine.Tilemaps;
 
 
-public class BoardTileCollector : MonoBehaviour
+public class BoardTileCollector : Singleton<BoardTileCollector>
 {
-    public static BoardTileCollector Instance;
     public static event Action<int> completeLevel;
     [SerializeField] private float duration;
     [SerializeField] private List<Transform> slots;
-    [Header("Screen")]
-    [SerializeField] private NextScreen nextScreen;
-    [SerializeField] private ReviveScreen reviveScreen;
-    [SerializeField] private GameOverScreen gameOver;
-    [SerializeField] private PlayScreen playScreen;
-    
     public readonly List<Tile> collectedTiles = new List<Tile>();
     private List<Tile> originalTile = new List<Tile>();
     private int _tileCount = 0;
@@ -31,19 +24,7 @@ public class BoardTileCollector : MonoBehaviour
     private Queue<Tile> waitSlot = new Queue<Tile>();
     private Dictionary<TypeTileId, List<Tile>> availableFruits = new Dictionary<TypeTileId, List<Tile>>();
     private int countProcessing = 0;
-
-
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-    }
+    
 
     public void AddTileObject(Tile tile)
     {
@@ -65,25 +46,7 @@ public class BoardTileCollector : MonoBehaviour
         tile.transform.parent = slots[slotIndex];
         if (collectedTiles.Count > 0 && TileManager.Instance.currentLevel > 1)
         {
-            playScreen.undoGroup.alpha = 1f;
-            if (playScreen.currentUndoCount < 1)
-            {       
-                playScreen.valueUndo.SetActive(false);
-
-                switch (StatusBar.Instance.currentCoin)
-                {
-                    case < 100:
-                        playScreen.adsUndo.SetActive(true);
-                        playScreen.coinUndo.SetActive(false);
-                        break;
-                    default:
-                        playScreen.adsUndo.SetActive(false);
-                        playScreen.coinUndo.SetActive(true);
-                        playScreen.textCoinUndo.text = 100.ToString();
-
-                        break;
-                }
-            }
+            UIManager.Instance.GetUI<PlayScreen>().BadgeUndoActive();
         }
         
         SetSameFruits(tile);
@@ -97,7 +60,7 @@ public class BoardTileCollector : MonoBehaviour
             {
                 if (isProcessing) return;
                 Debug.Log("Revive");
-                reviveScreen.ShowCountDownTime(5f);
+                UIManager.Instance.GetUI<ReviveScreen>().ShowCountDownTime(5f);
             }
         }));
         tile.transform.DOScale(tile.transform.localScale + new Vector3(0.2f, 0.2f), 0.4f).SetLink(tile.gameObject)
@@ -139,24 +102,18 @@ public class BoardTileCollector : MonoBehaviour
 
         if (sameFruit.Count == 1)
         {
-            DOVirtual.DelayedCall(0.1f, () => {
-                ReArrangeTileObjects();
-            });
+            DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
             tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() =>
             {
-                if (_tileCount >= 7)
-                {
-                    if (isProcessing) return;
-                    Debug.Log("Revive");
-                    reviveScreen.ShowCountDownTime(5f);
-                }
+                
+                OnRevive(_tileCount);
+
             }));
             tile.transform.DOScale(tile.transform.localScale + new Vector3(0.2f, 0.2f), 0.4f).SetLink(tile.gameObject)
                 .OnComplete((() =>
                 {
                     tile.transform.DOScale(1, 0.2f);
                 }));
-         //  ReArrangeTileObjects();
 
         }
 
@@ -173,20 +130,11 @@ public class BoardTileCollector : MonoBehaviour
                 slotIndex = targetTile;
                 collectedTiles.Remove(tile);
                 collectedTiles.Insert(targetIndex + 1, tile);
-                DOVirtual.DelayedCall(0.1f, () => {
-                    ReArrangeTileObjects();
-                });
+                DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
                 tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() => { 
-                    if (_tileCount >= 7)
-                    {
-                        if (isProcessing) return;
-                        Debug.Log("Revive");
-                        DOVirtual.DelayedCall(0.3f, ()=>
-                        {
-                            reviveScreen.ShowCountDownTime(5f);
-
-                        });
-                    }}));
+                    OnRevive(_tileCount);
+                    
+                }));
                 tile.transform.DOScale(tile.transform.localScale + new Vector3(0.2f, 0.2f), 0.4f).SetLink(tile.gameObject)
                     .OnComplete((() => { tile.transform.DOScale(1, 0.2f); }));
             }
@@ -222,6 +170,17 @@ public class BoardTileCollector : MonoBehaviour
 
             }
 
+        }
+    }
+
+    private void OnRevive(int tileCount)
+    {
+        if (tileCount >= 7)
+        {
+            if (isProcessing) return;
+            Debug.Log("Revive");
+            GameManager.ChangeState(GameState.ReviveScreen );
+            UIManager.Instance.GetUI<ReviveScreen>().ShowCountDownTime(5f);
         }
     }
 
@@ -274,20 +233,15 @@ public class BoardTileCollector : MonoBehaviour
                 if (TileManager.Instance.HasNextLevel())
                 {
                     Debug.Log("win");
-                    gameObject.SetActive(false);
-                    playScreen.boosters.SetActive(false);
-                    nextScreen.gameObject.SetActive(true);
-                    StatusBar.Instance.home.gameObject.SetActive(false);
-                    StatusBar.Instance.textLevel.gameObject.SetActive(false);
-
-                    nextScreen.ProgressionRewards();
+                    GameManager.ChangeState(GameState.NextLevel);
+                    UIManager.Instance.GetUI<StatusBar>().SetActiveStatus(false);
+                    UIManager.Instance.GetUI<NextScreen>().ProgressionRewards();
                     TileManager.Instance.tileIndex = 0;
                     completeLevel?.Invoke(TileManager.Instance.currentLevel);
                 }
                 else
                 {
-                    gameOver.gameObject.SetActive(true);
-                    nextScreen.gameObject.SetActive(false);
+                   GameManager.ChangeState(GameState.GameOver);
                 }
 
             }

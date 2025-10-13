@@ -1,30 +1,28 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using TMPro;
 public class CoinEffect : MonoBehaviour
 {
-   public static event Action onCompleteGoal;
+   public static event Action OnCompleteGoal;
    public GameObject coinPrefab;            
-   public Transform startSpawnPoint;       
-   public Transform targetPoint;             
+   public Transform startSpawnPoint;
+   private Transform _targetPoint;
+   private Transform targetPoint => UIManager.Instance.GetUI<StatusBar>().iconCoin.transform;
+
    public int pointPerCoin = 10;            
    public float delayBetweenCoins = 0.1f;   
 
-   private int _currentScore = 0;
    public float moveDuration = 0.6f;       
    public float parabolaHeight = 100f;
-   public TMP_Text textCurrentCoin;
-   private int currentCoin = 0;
-   private int goalScore;
+   private int _currentCoin;
+   private int _goalScore;
 
    public void RewardCoin(int rewardPoint)
    {
       int coinCount = rewardPoint / pointPerCoin;
-      goalScore = rewardPoint;
-     // Debug.LogError(coinCount);
+      _goalScore = rewardPoint;
+     
       StartCoroutine(SpawnCoins(coinCount));
    }
 
@@ -32,8 +30,9 @@ public class CoinEffect : MonoBehaviour
    {
       for (int i = 0; i < count; i++)
       {
-         GameObject coin = Instantiate(coinPrefab, startSpawnPoint.position, Quaternion.identity, transform);
-         StartCoroutine(ParabolaMove(coin, startSpawnPoint.position, targetPoint.position, parabolaHeight, moveDuration));
+         var startPos = startSpawnPoint.position;
+         GameObject coin = Instantiate(coinPrefab, startPos, Quaternion.identity, transform);
+         StartCoroutine(ParabolaMove(coin, startPos, targetPoint.position, parabolaHeight, moveDuration));
          yield return new WaitForSeconds(delayBetweenCoins);
       }
    }
@@ -62,8 +61,8 @@ public class CoinEffect : MonoBehaviour
    }
    IEnumerator AddScoreAnimated(int addAmount)
    {
-      int startScore = currentCoin;
-      int targetScore = currentCoin + addAmount;
+      int startScore = _currentCoin;
+      int targetScore = _currentCoin + addAmount;
       float duration = 0.001f;
       float elapsed = 0f;
 
@@ -71,21 +70,20 @@ public class CoinEffect : MonoBehaviour
       {
          elapsed += Time.deltaTime;
          float t = elapsed / duration;
-         currentCoin = Mathf.RoundToInt(Mathf.Lerp(startScore, targetScore, t));
+         _currentCoin = Mathf.RoundToInt(Mathf.Lerp(startScore, targetScore, t));
          //textCurrentCoin.text = textCurrentCoin.ToString();
          yield return null;
       }
 
-      currentCoin = targetScore;
-     // textCurrentCoin.text = CurrentCoin.ToString();
-     targetPoint.transform.DOScale(new Vector2(1.4f, 1.4f), 0.4f).OnComplete((() =>
+      _currentCoin = targetScore;
+      targetPoint.transform.DOScale(new Vector2(1.4f, 1.4f), 0.4f).OnComplete((() =>
      {
         targetPoint.transform.DOScale(1, 0.4f);
      }));
-      StatusBar.Instance.UpdateCoin(pointPerCoin);
-      if (currentCoin >= goalScore)
+      UIManager.Instance.GetUI<StatusBar>().UpdateCoin(pointPerCoin);
+      if (_currentCoin >= _goalScore)
       {
-         onCompleteGoal?.Invoke();
+         OnCompleteGoal?.Invoke();
       }
    }
 

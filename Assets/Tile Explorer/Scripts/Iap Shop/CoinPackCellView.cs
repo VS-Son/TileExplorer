@@ -39,8 +39,8 @@ public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView
         if (data is CoinPackData coinData)
         {
             if (!id.Equals(coinData.id)) return;
-            ShopManager.Instance.SetStatusValues(coinData.coin, 0, 0 ,0);
-            PlayScreen.Instance.SetBoosterValues( 0, 0 ,0);
+            UIManager.Instance.GetUI<ShopScreen>().SetStatusValues(coinData.coin, 0, 0 ,0);
+            UIManager.Instance.GetUI<PlayScreen>().SetBoosterValues(0,0,0);
         }
     }
 }

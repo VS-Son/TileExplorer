@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverScreen : MonoBehaviour
+public class GameOverScreen : UICanvas
 {
   [SerializeField] private Button startOver;
   [SerializeField] private TMPro.TMP_Text textStartOver;
 
   private void Start()
   {
-    startOver.onClick.AddListener((() => OnStartOver()));
     textStartOver.text = "Start Over Level " + 1;
   }
 
-  private void OnStartOver()
+  public void OnStartOver()
   {
-    this.gameObject.SetActive(false);
+    GameManager.ChangeState(GameState.PlayScreen);
+    CloseDirectly();
     TileManager.Instance.ResetTile(1);
   }
 }

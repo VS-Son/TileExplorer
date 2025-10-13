@@ -21,7 +21,7 @@ public class TileThemeScroller : MonoBehaviour, IEnhancedScrollerDelegate
         close.onClick.AddListener(OnClose);
         confirm.onClick.AddListener(OnConfirm);
         scroller.Delegate = this;
-         scroller.ReloadData();
+        scroller.ReloadData();
     }
 
     public int GetNumberOfCells(EnhancedScroller scroller)

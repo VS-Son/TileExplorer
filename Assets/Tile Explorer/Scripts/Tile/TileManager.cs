@@ -4,10 +4,8 @@ using Random = UnityEngine.Random;
 using System.Linq;
 
 
-public class TileManager : MonoBehaviour
+public class TileManager : Singleton<TileManager>
 {
-    public static TileManager Instance;
-
     public int currentLevel;
     public TextAsset tileJson;
     [SerializeField] private Tile tilePrefab;
@@ -32,15 +30,7 @@ public class TileManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-        }
-        
+       
         TileThemeData confirmedTheme = listTileTheme.tileThemeData.Find(t => t.isSelected);
         for (int i = 0; i < spriteDataList.Count; i++)
         {
@@ -370,8 +360,8 @@ public class TileManager : MonoBehaviour
                         Tile lowerTile = lowerLayer[checkCol, checkRow];
                         if (lowerTile != null)
                         {
-                            bool blocked = IsTileCovered(offsets,lowerTile);
-                            lowerTile.isSelect = !blocked;
+                            bool covered = IsTileCovered(offsets,lowerTile);
+                            lowerTile.isSelect = !covered;
                             lowerTile.spriteTile.color = lowerTile.background.color = (lowerTile.isSelect ? SetAlphaSprite( 255) : SetAlphaSprite(150) );
                              
                         }

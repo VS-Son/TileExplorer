@@ -5,45 +5,34 @@ using UnityEngine;
 using UnityEngine.UI;
 using Button = UnityEngine.UI.Button;
 
-public class SettingsScreen : MonoBehaviour
+public class SettingsScreen :UICanvas
 {
-  // [SerializeField] private GamePlaying gamePlaying;
-  public static SettingsScreen Instance;
-   [SerializeField] private Button close;
    [SerializeField] private Button buttonToggleMusic;
    [SerializeField] private GameObject musicOn;
    [SerializeField] private Button buttonSoundToggle;
    [SerializeField] private GameObject soundOn;
+
+   private GameState _gameState;
    
-
-    private void Awake()
-    {
-       if (Instance != null && Instance != this)
-       {
-          Destroy(gameObject);
-       }
-       else
-       {
-          Instance = this;
-       }
-    }
-
     private void Start()
    {
-      close.onClick.AddListener(OnClose);
       buttonToggleMusic.onClick.AddListener(MusicOn);
       buttonSoundToggle.onClick.AddListener(SoundOn);
    }
 
-  
-
-   private void OnClose()
+    
+    public void OnClose()
    {
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
-      gameObject.SetActive(false);
+      BackKey();
    }
 
-   private void SoundOn()
+    public override void BackKey()
+    {
+       CloseDirectly();
+    }
+
+    private void SoundOn()
    {
       AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
       if (!soundOn.gameObject.activeSelf)

@@ -5,10 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopManager : MonoBehaviour
+public class ShopScreen : UICanvas
 {
-   public static ShopManager Instance;
-   public Button back;
 
    [Header("Play Screen")]
    [SerializeField] private PlayScreen playScreen;
@@ -23,17 +21,10 @@ public class ShopManager : MonoBehaviour
    private int _undoCount;
    private int _magicWandCount;
    private int _shuffleCount;
-   private void Awake()
-   {
-      Instance = this;
-   }
-   private void Start()
-   {
-      back.onClick.AddListener(OnBack);
-      refund.onClick.AddListener(Refund);
-   }
+   private GameState _gameState;
 
-   private void Refund()
+  
+   public void OnRefund()
    {
       var shopScroll = FindObjectOfType<ShopScroller>();
       if (shopScroll != null)
@@ -41,16 +32,15 @@ public class ShopManager : MonoBehaviour
          shopScroll.RefundPurchased();
       }
    }
-   private void OnBack()
+   public void OnBack()
    {
-      gameObject.SetActive(false);
-      
+      UIManager.Instance.CloseUI<ShopScreen>();
    }
-
+   
    public void SetStatusValues(int coin, int undo , int magicWand , int shuffle)
    {
-      StatusBar.Instance.UpdateCoin(coin);
-      valueCoin.text = StatusBar.Instance.FormatCoin(StatusBar.Instance.currentCoin);
+      UIManager.Instance.GetUI<StatusBar>().UpdateCoin(coin);
+      valueCoin.text =  UIManager.Instance.GetUI<StatusBar>().FormatCoin( UIManager.Instance.GetUI<StatusBar>().currentCoin);
 
       _undoCount += undo;
       _magicWandCount += magicWand;
@@ -60,5 +50,9 @@ public class ShopManager : MonoBehaviour
       valueMagicWand.text =_magicWandCount.ToString("");
       valueShuffle.text = _shuffleCount.ToString("");
    }
-  
+
+   public void FormatCoin(int coin)
+   {
+      valueCoin.text = UIManager.Instance.GetUI<StatusBar>().FormatCoin(coin);
+   }
 }

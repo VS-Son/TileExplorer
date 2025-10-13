@@ -7,12 +7,12 @@ using UnityEngine.Serialization;
 
 public class ShopScroller : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    [Header("Status Bar")] [Header("Scroller References")]
+    [Header("Scroller References")]
     public EnhancedScroller scroller;
 
     [Header("Item Prefabs")] public ListItemPrefabConfig cellConfigs;
 
-    [FormerlySerializedAs("shopDatabase")] [Header("Shop Data")]
+    [Header("Shop Data")]
     public ShopItemData shopDataConfig;
 
     private Dictionary<ShopTypeItem, EnhancedScrollerCellView> _prefabDict =
