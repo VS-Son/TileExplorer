@@ -2,7 +2,8 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-.utmp/
+.utmp
+/[Ii]dea
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -64,7 +65,16 @@ sysinfo.txt
 
 # Mono auto generated files
 mono_crash.*
+# Ignore JetBrains IDE files
+.idea/
+*.iml
 
+# Allow only shared configs if needed
+!.idea/codeStyles/
+!.idea/inspectionProfiles/
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/vcs.xml
 # Builds
 *.apk
 *.aab

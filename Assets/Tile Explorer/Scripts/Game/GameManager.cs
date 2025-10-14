@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using Tile_Explorer.Scripts.Tile;
 using UnityEngine;
 
 public enum GameState { HomeScreen, PlayScreen, GameOver, ReviveScreen, Setting, Shop, StatusBar, NextLevel }

@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System;
 using DG.Tweening;
+using Tile_Explorer.Scripts.Tile;
+
 public class Tile : MonoBehaviour, IPointerClickHandler
 {
     public SpriteRenderer spriteTile;

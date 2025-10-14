@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Tile_Explorer.Scripts.Tile;
 using TMPro;
 using UnityEngine.Events;
 public class PlayScreen : UICanvas

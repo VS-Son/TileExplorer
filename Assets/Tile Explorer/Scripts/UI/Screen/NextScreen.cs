@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-
+using Tile_Explorer.Scripts.Tile;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;

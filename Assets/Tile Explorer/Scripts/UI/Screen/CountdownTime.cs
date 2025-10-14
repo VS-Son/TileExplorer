@@ -1,4 +1,5 @@
 using System.Collections;
+using Tile_Explorer.Scripts.Tile;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

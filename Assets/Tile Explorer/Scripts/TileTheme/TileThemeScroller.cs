@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
+using Tile_Explorer.Scripts.Tile;
 using UnityEngine;
 using UnityEngine.UI;
 
