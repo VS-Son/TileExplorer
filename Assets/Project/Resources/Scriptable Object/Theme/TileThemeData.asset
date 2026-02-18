@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ThemeData
-  m_EditorClassIdentifier: Assembly-CSharp::ListTileTheme
+  m_Script: {fileID: 11500000, guid: fb1991f08ff41e045bbd9930a89eb770, type: 3}
+  m_Name: TileThemeData
+  m_EditorClassIdentifier: 
   tileThemeData:
-  - id: 2
+  - id: 0
     typeTileTheme: 0
     spriteTile:
     - {fileID: -1558831741, guid: 8420a91bb6c83d241afd39862f1b30ad, type: 3}
@@ -26,20 +26,6 @@ MonoBehaviour:
     - {fileID: 1816254843, guid: 8420a91bb6c83d241afd39862f1b30ad, type: 3}
     - {fileID: -1693673488, guid: 8420a91bb6c83d241afd39862f1b30ad, type: 3}
     - {fileID: 21300000, guid: 7cc708258e6e0e042bd6e31c842ba0c6, type: 3}
-    isSelected: 0
-  - id: 0
-    typeTileTheme: 2
-    spriteTile:
-    - {fileID: 430677977, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: 2026880040, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: -2111333958, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: -2141874438, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: 2145883419, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: 815433369, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: -106340086, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: -637650323, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: 1547837299, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
-    - {fileID: -354998487, guid: 19ac5a499615566468bd537b995d23ed, type: 3}
     isSelected: 1
   - id: 1
     typeTileTheme: 1
@@ -54,4 +40,18 @@ MonoBehaviour:
     - {fileID: -792308915, guid: f87d08de004524046ad89e49ce7bf516, type: 3}
     - {fileID: 1960931870, guid: f87d08de004524046ad89e49ce7bf516, type: 3}
     - {fileID: 1171147698, guid: 5cf84a759612d584da15d1934c50d7dd, type: 3}
+    isSelected: 0
+  - id: 2
+    typeTileTheme: 2
+    spriteTile:
+    - {fileID: 430677977, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: 2026880040, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: -2111333958, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: -2141874438, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: 2145883419, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: 815433369, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: -106340086, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: -637650323, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: 1547837299, guid: 3d16b304c8da44243a45f910d5edf845, type: 3}
+    - {fileID: 97637212, guid: 19ac5a499615566468bd537b995d23ed, type: 3}
     isSelected: 0

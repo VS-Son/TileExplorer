@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 
-[System.Serializable]
-public class CellPrefabConfig
+namespace Project.Scripts.Iap_Shop
 {
-    public ShopTypeItem type;
-    public EnhancedScrollerCellView prefab;
-}
-[CreateAssetMenu(fileName = "cellConfigs", menuName = "ListCellPrefabConfig")]
-public class ListItemPrefabConfig : ScriptableObject
-{
-    public List<CellPrefabConfig> cellPrefab = new List<CellPrefabConfig>();
+    [System.Serializable]
+    public class CellPrefabConfig
+    {
+        public ShopTypeItem type;
+        public EnhancedScrollerCellView prefab;
+    }
+    [CreateAssetMenu(fileName = "cellConfigs", menuName = "ListCellPrefabConfig")]
+    public class ListItemPrefabConfig : ScriptableObject
+    {
+        public List<CellPrefabConfig> cellPrefab = new List<CellPrefabConfig>();
+    }
 }

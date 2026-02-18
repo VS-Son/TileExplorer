@@ -1,51 +1,52 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Tile_Explorer.Scripts.Tile;
 using UnityEngine;
 using DG.Tweening;
+using Project.Scripts.Game;
+using Project.Scripts.Manager;
+using Project.Scripts.Sound;
+using Project.Scripts.UI.Manager;
 using Project.Scripts.UI.Screen;
 
 namespace Project.Scripts.Tile
 {
     public class BoardTileCollector : Singleton<BoardTileCollector>
     {
-        public static event Action<int> completeLevel;
+        public static event Action<int> CompleteLevel;
+        
         [SerializeField] private float duration;
         [SerializeField] private List<Transform> slots;
-        public readonly List<global::Tile> collectedTiles = new List<global::Tile>();
-        private List<global::Tile> originalTile = new List<global::Tile>();
-        private int _tileCount = 0;
-        private bool isProcessing = false ;
-        private bool isSame = false;
-        private bool isMoveSlot;
-        private Vector2 originalScale;
-        private int count = 0;
-        private int slotIndex = 0;
-        private Queue<global::Tile> waitSlot = new Queue<global::Tile>();
-        private Dictionary<TypeTileId, List<global::Tile>> availableFruits = new Dictionary<TypeTileId, List<global::Tile>>();
-        private int countProcessing = 0;
         
+        public readonly List<global::Project.Scripts.Tile.Tile> CollectedTiles = new List<global::Project.Scripts.Tile.Tile>();
+        private readonly List<global::Project.Scripts.Tile.Tile> _originalTile = new List<global::Project.Scripts.Tile.Tile>();
+        private int _tileCount = 0;
+        private bool _isProcessing = false ;
+        private bool _isMoveSlot;
+        private Vector2 _originalScale;
+        private int _slotIndex = 0;
+        private int _countProcessing = 0;
 
-        public void AddTileObject(global::Tile tile)
+        
+        public void AddTileObject(global::Project.Scripts.Tile.Tile tile)
         {
-            originalScale = tile.transform.lossyScale;
+            _originalScale = tile.transform.lossyScale;
             tile.originalPosition = tile.transform.position;
             tile.originalLayer = tile.currentLayer;
             
-            collectedTiles.Add(tile);
-            originalTile.Add(tile);
+            CollectedTiles.Add(tile);
+            _originalTile.Add(tile);
 
             tile.spriteTile.sortingOrder = 10;
             tile.background.sortingOrder = 9;
 
-            Debug.Log("Count " + collectedTiles.Count);
-            slotIndex = collectedTiles.Count;
-            slotIndex = _tileCount;
+            Debug.Log("Count " + CollectedTiles.Count);
+            _slotIndex = CollectedTiles.Count;
+            _slotIndex = _tileCount;
       
             _tileCount++;
-            tile.transform.parent = slots[slotIndex];
-            if (collectedTiles.Count > 0 && TileManager.Instance.currentLevel > 1)
+            tile.transform.parent = slots[_slotIndex];
+            if (CollectedTiles.Count > 0 && TileManager.Instance.currentLevel > 1)
             {
                 UIManager.Instance.GetUI<PlayScreen>().BadgeUndoActive();
             }
@@ -53,13 +54,13 @@ namespace Project.Scripts.Tile
             SetSameFruits(tile);
         
         
-            tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() =>
+            tile.transform.DOMove(slots[_slotIndex].position, duration).OnComplete((() =>
             {
                 ReArrangeTileObjects();
         
                 if (_tileCount >= 7)
                 {
-                    if (isProcessing) return;
+                    if (_isProcessing) return;
                     Debug.Log("Revive");
                     UIManager.Instance.GetUI<ReviveScreen>().ShowCountDownTime(5f);
                 }
@@ -69,31 +70,31 @@ namespace Project.Scripts.Tile
 
         }
 
-        public void MoveSlotTile(List<global::Tile> tileList)
+        public void MoveSlotTile(List<global::Project.Scripts.Tile.Tile> tileList)
         {
         
-            slotIndex = collectedTiles.Count;
+            _slotIndex = CollectedTiles.Count;
             foreach (var tile in tileList)
             {
-                slotIndex = _tileCount;
+                _slotIndex = _tileCount;
                 _tileCount ++;
-                originalScale = tile.transform.localScale;
+                _originalScale = tile.transform.localScale;
                 tile.originalPosition = tile.transform.position;
                 tile.originalLayer = tile.currentLayer;
-                tile.transform.parent = slots[slotIndex];
+                tile.transform.parent = slots[_slotIndex];
                 Debug.Log(_tileCount);
-                collectedTiles.Add(tile);
-                originalTile.Add(tile);
+                CollectedTiles.Add(tile);
+                _originalTile.Add(tile);
                 SetSameFruits(tile);
             }
         }
 
-        private void SetSameFruits(global::Tile tile)
+        private void SetSameFruits(global::Project.Scripts.Tile.Tile tile)
         {
-            var sameFruit = new List<global::Tile>();
-            foreach (var tileObject in collectedTiles)
+            var sameFruit = new List<global::Project.Scripts.Tile.Tile>();
+            foreach (var tileObject in CollectedTiles)
             {
-                if (tileObject.typeTileId == tile.typeTileId)
+                if (tileObject.typeId == tile.typeId)
                 {
                     sameFruit.Add(tileObject);
                 
@@ -104,7 +105,7 @@ namespace Project.Scripts.Tile
             if (sameFruit.Count == 1)
             {
                 DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
-                tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() =>
+                tile.transform.DOMove(slots[_slotIndex].position, duration).OnComplete((() =>
                 {
                 
                     OnRevive(_tileCount);
@@ -121,18 +122,18 @@ namespace Project.Scripts.Tile
             if (sameFruit.Count == 2)
             {
                 Debug.LogWarning("matching tiles");
-                global::Tile firstTile = sameFruit[0];
-                int targetIndex = collectedTiles.IndexOf(firstTile);
+                global::Project.Scripts.Tile.Tile firstTile = sameFruit[0];
+                int targetIndex = CollectedTiles.IndexOf(firstTile);
 
                 if (targetIndex != -1)
                 {
                     Debug.LogWarning("Tile indices of matching tiles " + (targetIndex + 1));
                     int targetTile = targetIndex + 1;
-                    slotIndex = targetTile;
-                    collectedTiles.Remove(tile);
-                    collectedTiles.Insert(targetIndex + 1, tile);
+                    _slotIndex = targetTile;
+                    CollectedTiles.Remove(tile);
+                    CollectedTiles.Insert(targetIndex + 1, tile);
                     DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
-                    tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() => { 
+                    tile.transform.DOMove(slots[_slotIndex].position, duration).OnComplete((() => { 
                         OnRevive(_tileCount);
                     
                     }));
@@ -143,21 +144,21 @@ namespace Project.Scripts.Tile
 
             if (sameFruit.Count == 3)
             {
-                isProcessing = true;
-                countProcessing++;
+                _isProcessing = true;
+                _countProcessing++;
                 Debug.LogWarning("matching tiles");
-                global::Tile firstTile = sameFruit[1];
-                int targetIndex = collectedTiles.IndexOf(firstTile);
+                global::Project.Scripts.Tile.Tile firstTile = sameFruit[1];
+                int targetIndex = CollectedTiles.IndexOf(firstTile);
 
                 if (targetIndex != -1)
                 {
                     Debug.LogWarning("Tile indices of matching tiles " + (targetIndex + 1));
                     int targetTile = targetIndex + 1;
-                    slotIndex = targetTile;
-                    collectedTiles.Remove(tile);
-                    collectedTiles.Insert(targetIndex + 1, tile);
+                    _slotIndex = targetTile;
+                    CollectedTiles.Remove(tile);
+                    CollectedTiles.Insert(targetIndex + 1, tile);
                     DOVirtual.DelayedCall(0.1f, ReArrangeTileObjects);
-                    tile.transform.DOMove(slots[slotIndex].position, duration).OnComplete((() =>
+                    tile.transform.DOMove(slots[_slotIndex].position, duration).OnComplete((() =>
                     { 
                         DOVirtual.DelayedCall(0.1f, () =>
                         {
@@ -178,18 +179,18 @@ namespace Project.Scripts.Tile
         {
             if (tileCount >= 7)
             {
-                if (isProcessing) return;
+                if (_isProcessing) return;
                 Debug.Log("Revive");
-                GameManager.ChangeState(GameState.ReviveScreen );
+                GameState.ChangeState(StateUI.ReviveScreen );
                 UIManager.Instance.GetUI<ReviveScreen>().ShowCountDownTime(5f);
             }
         }
 
         private void ReArrangeTileObjects()
         {
-            for (int i = 0; i < collectedTiles.Count; i++)
+            for (int i = 0; i < CollectedTiles.Count; i++)
             {
-                var tile = collectedTiles[i];
+                var tile = CollectedTiles[i];
                 tile.transform.parent = slots[i];
                 tile.transform.DOMove(slots[i].position, 0.4f).SetLink(tile.gameObject);
             }
@@ -199,7 +200,7 @@ namespace Project.Scripts.Tile
 
 
 
-        IEnumerator ScaleMatchingTiles(List<global::Tile> sameFruitTiles)
+        IEnumerator ScaleMatchingTiles(List<global::Project.Scripts.Tile.Tile> sameFruitTiles)
         {
             foreach (var tile in sameFruitTiles)
             {
@@ -211,12 +212,11 @@ namespace Project.Scripts.Tile
             }
 
 
-            count++;
-            AudioManager.Instance.PlaySfx("destroy");
+            AudioManager.Instance.PlaySfx(AudioConstants.Destroy);
             foreach (var tile in sameFruitTiles)
             {
-                collectedTiles.Remove(tile);
-                originalTile.Remove(tile);
+                CollectedTiles.Remove(tile);
+                _originalTile.Remove(tile);
                 _tileCount--;
                 Debug.Log(_tileCount);
                 Destroy(tile.gameObject);
@@ -225,24 +225,24 @@ namespace Project.Scripts.Tile
        
 
             ReArrangeTileObjects();
-            isProcessing = false;
+            _isProcessing = false;
             DOVirtual.DelayedCall(0.4f, () =>
             {
-                countProcessing--;
-                if (CheckTilesSelected() && countProcessing == 0 && !isProcessing)
+                _countProcessing--;
+                if (CheckTilesSelected() && _countProcessing == 0 && !_isProcessing)
                 {
                     if (TileManager.Instance.HasNextLevel())
                     {
                         Debug.Log("win");
-                        GameManager.ChangeState(GameState.NextLevel);
+                        GameState.ChangeState(StateUI.NextLevel);
                         UIManager.Instance.GetUI<StatusBar>().SetActiveStatus(false);
                         UIManager.Instance.GetUI<NextScreen>().ProgressionRewards();
                         TileManager.Instance.tileIndex = 0;
-                        completeLevel?.Invoke(TileManager.Instance.currentLevel);
+                        CompleteLevel?.Invoke(TileManager.Instance.currentLevel);
                     }
                     else
                     {
-                        GameManager.ChangeState(GameState.GameOver);
+                        GameState.ChangeState(StateUI.GameOver);
                     }
 
                 }
@@ -261,7 +261,7 @@ namespace Project.Scripts.Tile
                 {
                     for (int col = 0; col < grid.GetLength(1); col++)
                     {
-                        global::Tile tile = grid[row, col];
+                        global::Project.Scripts.Tile.Tile tile = grid[row, col];
                    
                         if (tile != null && !tile.isCollected)
                         {
@@ -277,32 +277,32 @@ namespace Project.Scripts.Tile
     
         public void ResetGame()
         {
-            foreach (var tileObject in collectedTiles)
+            foreach (var tileObject in CollectedTiles)
             {
                 Destroy(tileObject.gameObject);
             }
 
             _tileCount = 0;
-            collectedTiles.Clear();
-            originalTile.Clear();
+            CollectedTiles.Clear();
+            _originalTile.Clear();
         }
 
         public void UndoTiles(int numTiles)
         {
             int countNumberOfTimeUndo = 0;
-            int count = Mathf.Min(numTiles, originalTile.Count);
+            int count = Mathf.Min(numTiles, _originalTile.Count);
             countNumberOfTimeUndo++;
             for (int i = 0; i < count; i++)
             {
-                int index = originalTile.Count - 1 - i;
-                global::Tile tile = originalTile[index];
+                int index = _originalTile.Count - 1 - i;
+                global::Project.Scripts.Tile.Tile tile = _originalTile[index];
 
           
                 tile.transform.DOMove(tile.originalPosition, 0.4f).SetEase(Ease.InOutQuad).OnComplete((() =>
                 {
                   
                 }));
-                tile.transform.DOScale(originalScale, 0.6f).OnComplete((() =>
+                tile.transform.DOScale(_originalScale, 0.6f).OnComplete((() =>
                 {
                     if (numTiles > 1)
                     {
@@ -320,19 +320,19 @@ namespace Project.Scripts.Tile
                 tile.collider2d.enabled = true;
                 TileManager.Instance.SetLayer(tile, tile.originalLayer);
                 TileManager.Instance.UpdateTileSelect(tile);
-                collectedTiles.Remove(tile);
+                CollectedTiles.Remove(tile);
 
             }
 
-            originalTile.RemoveRange(originalTile.Count - count, count);
+            _originalTile.RemoveRange(_originalTile.Count - count, count);
             _tileCount -= count;
             ReArrangeTileObjects();
         }
 
 
-        public List<global::Tile> GetCollectedTiles()
+        public List<global::Project.Scripts.Tile.Tile> GetCollectedTiles()
         {
-            return new List<global::Tile>(collectedTiles);
+            return new List<global::Project.Scripts.Tile.Tile>(CollectedTiles);
         }
     }
 }

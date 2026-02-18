@@ -1,26 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Project.Scripts.Game;
 using Project.Scripts.Tile;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class ReviveScreen : UICanvas
+namespace Project.Scripts.UI.Screen
 {
-
-  
-
-    [SerializeField] private CountdownTime countdownTime;
+    public class ReviveScreen : UICanvas
+    {
+        [SerializeField] private CountdownTime countdownTime;
     
-    public void ShowCountDownTime(float duration)
-    {
-        StartCoroutine(countdownTime.UpdateTimer(duration));
-    }
-    public void OnRevive()
-    {
-        GameManager.ChangeState(GameState.PlayScreen);
-        CloseDirectly();
-        BoardTileCollector.Instance.UndoTiles(5);
+        public void ShowCountDownTime(float duration)
+        {
+            StartCoroutine(countdownTime.UpdateTimer(duration));
+        }
+        public void OnRevive()
+        {
+            GameState.ChangeState(StateUI.PlayScreen);
+            CloseDirectly();
+            BoardTileCollector.Instance.UndoTiles(5);
 
+        }
     }
 }

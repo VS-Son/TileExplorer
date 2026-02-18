@@ -1,24 +1,26 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Tile_Explorer.Scripts.Tile;
+using Project.Scripts.Game;
+using Project.Scripts.Tile;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOverScreen : UICanvas
+namespace Project.Scripts.UI.Screen
 {
-  [SerializeField] private Button startOver;
-  [SerializeField] private TMPro.TMP_Text textStartOver;
-
-  private void Start()
+  public class GameOverScreen : UICanvas
   {
-    textStartOver.text = "Start Over Level " + 1;
-  }
+    [SerializeField] private Button startOver;
+    [SerializeField] private TMPro.TMP_Text textStartOver;
 
-  public void OnStartOver()
-  {
-    GameManager.ChangeState(GameState.PlayScreen);
-    CloseDirectly();
-    TileManager.Instance.ResetTile(1);
+    private void Start()
+    {
+      textStartOver.text = "Start Over Level " + 1;
+    }
+
+    public void OnStartOver()
+    {
+      GameState.ChangeState(StateUI.PlayScreen);
+      CloseDirectly();
+      TileManager.Instance.ResetTile(1);
+    }
   }
 }

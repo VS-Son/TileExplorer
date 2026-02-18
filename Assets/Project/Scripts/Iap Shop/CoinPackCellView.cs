@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 
 
 public class CoinPackCellView : EnhancedScrollerCellView,IShopCellView

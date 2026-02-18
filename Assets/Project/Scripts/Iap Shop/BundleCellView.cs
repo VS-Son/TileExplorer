@@ -1,5 +1,7 @@
 using System;
 using EnhancedUI.EnhancedScroller;
+using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;

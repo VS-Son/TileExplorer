@@ -1,59 +1,74 @@
 using System.Collections.Generic;
 using System.Linq;
-using Project.Scripts.Tile;
+using Project.Scripts.Manager;
+using Project.Scripts.TileTheme;
+using Project.Scripts.UI.Manager;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 
-namespace Tile_Explorer.Scripts.Tile
+namespace Project.Scripts.Tile
 {
     public class TileManager : Singleton<TileManager>
     {
         public int currentLevel;
         private TextAsset _tileJson;
-        [SerializeField] private global::Tile tilePrefab;
+        [SerializeField] private Tile tilePrefab;
         [SerializeField] private List<TileSpriteData> spriteDataList;
-        [SerializeField] private ListTileTheme listTileTheme;
-        public Transform gamePlayTransform;
+        [SerializeField] private ListTileTheme listTileThemeData;
+        public GameObject gameplay;
+        public int tileIndex;
 
         private List<LevelData> _tileLevel;
-        private readonly Dictionary<TypeTileId, int> _countTileId = new Dictionary<TypeTileId, int>();
-        private Dictionary<TypeTileId, Sprite> _spriteLookup;
-        public int tileIndex { get; set; }
-        private float sizeToLoad { get; set; }
-        private float spacingToLoad { get; set; }
+        private readonly Dictionary<TypeId, int> _countTileId = new Dictionary<TypeId, int>();
+        private Dictionary<TypeId, Sprite> _spritesLookup;
+        private float _sizeToLoad;
+        private float _spacingToLoad;
 
 
-        private List<TypeTileId> _distributedTiles;
+        private List<TypeId> _distributedTiles;
 
-        public readonly Dictionary<int, global::Tile[,]> LayerTiles = new();
+        public readonly Dictionary<int, Tile[,]> LayerTiles = new();
 
         private readonly Dictionary<int, Transform> _layerParent = new();
 
 
+        private readonly List<TypeId> _listFruit = new List<TypeId>()
+        {
+            TypeId.Id0,
+            TypeId.Id1,
+            TypeId.Id2,
+            TypeId.Id3,
+            TypeId.Id4,
+            TypeId.Id5,
+            TypeId.Id6,
+            TypeId.Id7,
+            TypeId.Id8,
+            TypeId.Id9,
+        };
+
         private void Awake()
         {
-             _tileJson = Resources.Load<TextAsset>("Json/LevelTile");
-            TileThemeData confirmedTheme = listTileTheme.tileThemeData.Find(t => t.isSelected);
-            for (int i = 0; i < spriteDataList.Count; i++)
-            {
-                spriteDataList[i].sprite = confirmedTheme.spriteTile[i];
-            }
+            LoadJson();
         }
 
-        private readonly List<TypeTileId> _listFruit = new List<TypeTileId>()
+        private void LoadJson()
         {
-            TypeTileId.ID1,
-            TypeTileId.ID2,
-            TypeTileId.ID3,
-            TypeTileId.ID4,
-            TypeTileId.ID5,
-            TypeTileId.ID6,
-            TypeTileId.ID7,
-            TypeTileId.ID8,
-            TypeTileId.ID9,
-            TypeTileId.ID10,
-        };
+            _tileJson = Resources.Load<TextAsset>("Json/LevelTile");
+        }
+
+        private void LoadThemeTile()
+        {
+            if (spriteDataList != null)
+            {
+                TileThemeData confirmedTheme = listTileThemeData.tileThemeData.Find(t => t.isSelected);
+                for (int i = 0; i < spriteDataList.Count; i++)
+                {
+                    spriteDataList[i].sprite = confirmedTheme.spriteTile[i];
+                }
+            }
+           
+        }
 
         void Start()
         {
@@ -63,6 +78,7 @@ namespace Tile_Explorer.Scripts.Tile
         private void OnInit()
         {
             TileJson();
+            LoadThemeTile();
             GenerateTileManager();
         }
 
@@ -75,31 +91,30 @@ namespace Tile_Explorer.Scripts.Tile
 
         private void GenerateTileManager()
         {
-            _spriteLookup = new Dictionary<TypeTileId, Sprite>();
+            _spritesLookup = new Dictionary<TypeId, Sprite>();
             foreach (var data in spriteDataList)
             {
-                if (!_spriteLookup.ContainsKey(data.typeTileId))
+                if (!_spritesLookup.ContainsKey(data.typeId))
                 {
-                    _spriteLookup.Add(data.typeTileId, data.sprite);
+                    _spritesLookup.Add(data.typeId, data.sprite);
                 }
             }
 
             List<TileLayerData> layerConfigs = LoadLayerConfigs();
-
             int totalTileCount = 0;
             foreach (var config in layerConfigs)
             {
                 int removeCount = config.removeTile != null ? config.removeTile.Count : 0;
                 totalTileCount += (config.rows * config.cols) - removeCount;
             }
-
+            
             CalculateIndexLayerTile(totalTileCount);
 
             LevelData levelData = _tileLevel.Find(l => l.level == currentLevel);
             if (levelData != null)
             {
-                sizeToLoad = levelData.size;
-                spacingToLoad = levelData.spacing;
+                _sizeToLoad = levelData.size;
+                _spacingToLoad = levelData.spacing;
                 foreach (var config in layerConfigs)
                 {
                
@@ -108,11 +123,8 @@ namespace Tile_Explorer.Scripts.Tile
                     Debug.Log("layer Grid " + LayerTiles.Count);
 
                 }
-                SetCoveredTiles();
-
+                SetTilesCovered();
             }
-
-
             Debug.Log("Total Tile: " + totalTileCount);
         }
 
@@ -143,11 +155,11 @@ namespace Tile_Explorer.Scripts.Tile
             // }
         }
 
-        private List<TypeTileId> GenerateDistributedTiles(int totalTilesCreated, List<TypeTileId> list)
+        private List<TypeId> GenerateDistributedTiles(int totalTilesCreated, List<TypeId> list)
         {
             List<int> itemCounts = GenerateBalancedCountsTile(totalTilesCreated, list.Count);
             ShuffleList(itemCounts);
-            List<TypeTileId> result = new List<TypeTileId>();
+            List<TypeId> result = new List<TypeId>();
             for (int i = 0; i < list.Count; i++)
             {
                 for (int j = 0; j < itemCounts[i]; j++)
@@ -183,18 +195,18 @@ namespace Tile_Explorer.Scripts.Tile
         }
 
 
-        private global::Tile[,] GenerateTile(int rows, int cols, float y, float x, string nameParentLayer, int orderInLayer,
+        private Tile[,] GenerateTile(int rows, int cols, float y, float x, string nameParentLayer, int orderInLayer,
             List<Vector2Int> removeIndex)
         {
 
-            global::Tile[,] tiles = new global::Tile[cols, rows];
-            float offset = (rows - 1) * spacingToLoad / 2f;
-            float offsetY = (cols - 1) * spacingToLoad / 2f;
+            Tile[,] tiles = new Tile[cols, rows];
+            float offset = (rows - 1) * _spacingToLoad / 2f;
+            float offsetY = (cols - 1) * _spacingToLoad / 2f;
             if (!_layerParent.ContainsKey(orderInLayer))
             {
                 var layerParent = new GameObject(nameParentLayer);
                 _layerParent[orderInLayer] = layerParent.transform;
-                layerParent.transform.SetParent(gamePlayTransform);
+                layerParent.transform.SetParent(gameplay.transform);
 
             }
 
@@ -202,7 +214,7 @@ namespace Tile_Explorer.Scripts.Tile
             {
                 for (int rowX = 0; rowX < tiles.GetLength(1); rowX++)
                 {
-                    Vector3 spawnPosition = new Vector3((rowX * spacingToLoad - offset) + x, -colY * spacingToLoad - offsetY + y, 0);
+                    Vector3 spawnPosition = new Vector3((rowX * _spacingToLoad - offset) + x, -colY * _spacingToLoad - offsetY + y, 0);
                     if (removeIndex != null && removeIndex.Contains(new Vector2Int(rowX, colY))) 
                     {
                         continue;
@@ -216,22 +228,21 @@ namespace Tile_Explorer.Scripts.Tile
                     tile.row = rowX;
                     tile.col = colY;
                     tile.currentLayer = orderInLayer;
-                    tile.tileManager = this;
                     tile.isCollected = false;
-
+                    
                     var tileType = GetDistributedTileType();
-                    tile.typeTileId = tileType;
+                    tile.typeId = tileType;
                     tile.spriteTile.sprite = GetSpriteForTileType(tileType);
                     if (tile.spriteTile.sprite == null)
                     {
                         Debug.LogWarning($"Sprite null for tileType: {tileType}");
                     }
 
-                    // if (!IsTileCovered(tile))
+                    // if (!HasTileCovered(tile))
                     // {
                     //     tile.spriteTile.color = Color.black;
                     // }
-                    tile.transform.localScale = new Vector2(sizeToLoad, sizeToLoad);
+                    tile.transform.localScale = new Vector2(_sizeToLoad, _sizeToLoad);
 
                     tile.name = $"Tile_{colY}_{rowX}";
                     tiles[colY, rowX] = tile;
@@ -240,7 +251,7 @@ namespace Tile_Explorer.Scripts.Tile
 
             return tiles;
         }
-        private void SetCoveredTiles()
+        private void SetTilesCovered()
         {
             foreach (var layerValue in LayerTiles.Values)
             {
@@ -248,7 +259,7 @@ namespace Tile_Explorer.Scripts.Tile
                 {
                     for (int col = 0; col < layerValue.GetLength(1); col++)
                     {
-                        global::Tile tile = layerValue[row, col];
+                        global::Project.Scripts.Tile.Tile tile = layerValue[row, col];
                         if (tile != null)
                         {
                             foreach (var layer in LayerTiles)
@@ -257,7 +268,7 @@ namespace Tile_Explorer.Scripts.Tile
                                 if (higherLayer > tile.currentLayer)
                                 {
                                     tile.isSelect = false;
-                                    tile.spriteTile.color = tile.background.color = SetAlphaSprite(150);
+                                    tile.spriteTile.color = tile.background.color = SetAlphaSprite(100);
                                 
                                 }
                                 else
@@ -271,7 +282,7 @@ namespace Tile_Explorer.Scripts.Tile
             }
         }
     
-        private TypeTileId GetDistributedTileType()
+        private TypeId GetDistributedTileType()
         {
 
             var tileType = _distributedTiles[tileIndex];
@@ -279,9 +290,9 @@ namespace Tile_Explorer.Scripts.Tile
             return tileType;
         }
 
-        private Sprite GetSpriteForTileType(TypeTileId typeTileId)
+        private Sprite GetSpriteForTileType(TypeId typeId)
         {
-            if (_spriteLookup.TryGetValue(typeTileId, out Sprite sprite))
+            if (_spritesLookup.TryGetValue(typeId, out Sprite sprite))
             {
                 return sprite;
             }
@@ -301,57 +312,24 @@ namespace Tile_Explorer.Scripts.Tile
             }
         }
 
-        private TypeTileId GetFruitTypeFromSprite(Sprite sprite)
+        private TypeId GetFruitTypeFromSprite(Sprite sprite)
         {
-            foreach (var kvp in _spriteLookup)
+            foreach (var kvp in _spritesLookup)
             {
                 if (kvp.Value == sprite)
                     return kvp.Key;
             }
 
-            return TypeTileId.None;
+            return TypeId.None;
         }
-    
-
-        // public bool IsTileCovered(Tile tile)
-        // {
-        //     int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
-        //
-        //     foreach (var layer in LayerTiles)
-        //     {
-        //         int higherLayer = layer.Key;
-        //         if (higherLayer <= tile.currentLayer) continue;
-        //
-        //         Tile[,] higherGrid = layer.Value;
-        //         for (int i = 0; i < offsets.GetLength(0); i++)
-        //         {
-        //             int checkCol = tile.col - offsets[i, 0];
-        //             int checkRow = tile.row - offsets[i, 1];
-        //
-        //             if (checkCol >= 0 && checkCol < higherGrid.GetLength(0) &&
-        //                 checkRow >= 0 && checkRow < higherGrid.GetLength(1))
-        //             {
-        //                 Tile coveringTile = higherGrid[checkCol, checkRow];
-        //                 if (coveringTile != null && !coveringTile.isCollected)
-        //                 {
-        //                     return true;
-        //                 }
-        //
-        //             }
-        //         }
-        //     }
-        //
-        //     return false;
-        // }
-
-        public void UpdateTileSelect(global::Tile tile)
+        public void UpdateTileSelect(global::Project.Scripts.Tile.Tile tile)
         {
             int[,] offsets = { { 0, 0 }, { 1, 0 }, { 0, 1 }, { 1, 1 } };
             if (tile.isSelect)
             {
                 foreach (var layer in LayerTiles)
                 {
-                    global::Tile[,] lowerLayer = layer.Value;
+                    global::Project.Scripts.Tile.Tile[,] lowerLayer = layer.Value;
                     for (int i = 0; i < offsets.GetLength(0); i++)
                     {
                         int checkCol = tile.col + offsets[i, 0];
@@ -360,10 +338,10 @@ namespace Tile_Explorer.Scripts.Tile
                         if (checkCol >= 0 && checkCol < lowerLayer.GetLength(0) &&
                             checkRow >= 0 && checkRow < lowerLayer.GetLength(1))
                         {
-                            global::Tile lowerTile = lowerLayer[checkCol, checkRow];
+                            global::Project.Scripts.Tile.Tile lowerTile = lowerLayer[checkCol, checkRow];
                             if (lowerTile != null)
                             {
-                                bool covered = IsTileCovered(offsets,lowerTile);
+                                bool covered = HasTileCovered(offsets,lowerTile);
                                 lowerTile.isSelect = !covered;
                                 lowerTile.spriteTile.color = lowerTile.background.color = (lowerTile.isSelect ? SetAlphaSprite( 255) : SetAlphaSprite(150) );
                              
@@ -375,7 +353,7 @@ namespace Tile_Explorer.Scripts.Tile
        
         }
 
-        private bool  IsTileCovered(int[,] offsets, global::Tile lowerTile)
+        private bool  HasTileCovered(int[,] offsets, global::Project.Scripts.Tile.Tile lowerTile)
         {
 
             foreach (var layer in LayerTiles)
@@ -383,7 +361,7 @@ namespace Tile_Explorer.Scripts.Tile
                 int higherLayer = layer.Key;
                 if (higherLayer <= lowerTile.currentLayer) continue;
 
-                global::Tile[,] higherGrid = layer.Value;
+                global::Project.Scripts.Tile.Tile[,] higherGrid = layer.Value;
                 for (int i = 0; i < offsets.GetLength(0); i++)
                 {
                     int checkCol = lowerTile.col - offsets[i, 0];
@@ -392,7 +370,7 @@ namespace Tile_Explorer.Scripts.Tile
                     if (checkCol >= 0 && checkCol < higherGrid.GetLength(0) &&
                         checkRow >= 0 && checkRow < higherGrid.GetLength(1))
                     {
-                        global::Tile coveringTile = higherGrid[checkCol, checkRow];
+                        global::Project.Scripts.Tile.Tile coveringTile = higherGrid[checkCol, checkRow];
                         if (coveringTile != null && !coveringTile.isCollected)
                         {
                             return true; 
@@ -412,8 +390,8 @@ namespace Tile_Explorer.Scripts.Tile
         }
         public void ShuffleTiles()
         {
-            List<global::Tile> remainingTiles = new List<global::Tile>();
-            List<TypeTileId> remainingTileTypes = new List<TypeTileId>();
+            List<global::Project.Scripts.Tile.Tile> remainingTiles = new List<global::Project.Scripts.Tile.Tile>();
+            List<TypeId> remainingTileTypes = new List<TypeId>();
 
             foreach (var layers in LayerTiles.Values)
             {
@@ -421,12 +399,12 @@ namespace Tile_Explorer.Scripts.Tile
                 {
                     for (int col = 0; col < layers.GetLength(1); col++)
                     {
-                        global::Tile tile = layers[row, col];
+                        Tile tile = layers[row, col];
                         if (tile != null && !tile.isCollected)
                         {
                             remainingTiles.Add(tile);
-                            TypeTileId typeTileId = GetFruitTypeFromSprite(tile.spriteTile.sprite);
-                            remainingTileTypes.Add(typeTileId);
+                            TypeId typeId = GetFruitTypeFromSprite(tile.spriteTile.sprite);
+                            remainingTileTypes.Add(typeId);
                         }
                     }
                 }
@@ -436,10 +414,10 @@ namespace Tile_Explorer.Scripts.Tile
 
             for (int i = 0; i < remainingTiles.Count; i++)
             {
-                if (_spriteLookup.TryGetValue(remainingTileTypes[i], out Sprite sprite))
+                if (_spritesLookup.TryGetValue(remainingTileTypes[i], out Sprite sprite))
                 {
                     remainingTiles[i].spriteTile.sprite = sprite;
-                    remainingTiles[i].typeTileId = remainingTileTypes[i];
+                    remainingTiles[i].typeId = remainingTileTypes[i];
 
                 }
             }
@@ -488,18 +466,18 @@ namespace Tile_Explorer.Scripts.Tile
 
         }
 
-        public void SetLayer(global::Tile tile, int layer)
+        public void SetLayer(Tile tile, int layer)
         {
             tile.transform.SetParent(_layerParent[layer]);
         }
 
         public void CollectSameTiles()
         {
-            List<global::Tile> collected = BoardTileCollector.Instance.GetCollectedTiles();
+            List<Tile> collected = BoardTileCollector.Instance.GetCollectedTiles();
 
             if (collected.Count == 0)
             {
-                Dictionary<TypeTileId, List<global::Tile>> availableTiles = new();
+                Dictionary<TypeId, List<global::Project.Scripts.Tile.Tile>> availableTiles = new();
 
                 foreach (var layers in LayerTiles.Values)
                 {
@@ -507,36 +485,36 @@ namespace Tile_Explorer.Scripts.Tile
                     {
                         for (int col = 0; col < layers.GetLength(1); col++)
                         {
-                            global::Tile tile = layers[row, col];
+                            global::Project.Scripts.Tile.Tile tile = layers[row, col];
                             if (tile != null && !tile.isCollected)
                             {
-                                if (!availableTiles.ContainsKey(tile.typeTileId))
-                                    availableTiles[tile.typeTileId] = new List<global::Tile>();
+                                if (!availableTiles.ContainsKey(tile.typeId))
+                                    availableTiles[tile.typeId] = new List<global::Project.Scripts.Tile.Tile>();
 
-                                availableTiles[tile.typeTileId].Add(tile);
+                                availableTiles[tile.typeId].Add(tile);
                             }
                         }
                     }
                 }
 
-                List<TypeTileId> validTileTypes =
+                List<TypeId> validTileTypes =
                     availableTiles.Where(kvp => kvp.Value.Count >= 3).Select(kvp => kvp.Key).ToList();
 
-                TypeTileId random = validTileTypes[Random.Range(0, validTileTypes.Count)];
-                List<global::Tile> selectedTiles = availableTiles[random];
+                TypeId random = validTileTypes[Random.Range(0, validTileTypes.Count)];
+                List<Tile> selectedTiles = availableTiles[random];
 
                 ShuffleList(selectedTiles);
-                List<global::Tile> result = selectedTiles.GetRange(0, 3);
+                List<Tile> result = selectedTiles.GetRange(0, 3);
 
                 BoardTileCollector.Instance.MoveSlotTile(result);
                 return;
             }
 
-            TypeTileId typeTileId = collected[0].typeTileId;
-            int countSlot = collected.Count(t => t.typeTileId == typeTileId);
+            TypeId typeId = collected[0].typeId;
+            int countSlot = collected.Count(t => t.typeId == typeId);
             int missingCount = 3 - countSlot;
 
-            List<global::Tile> remaining = FindTilesOfSameFruit(typeTileId, missingCount);
+            List<global::Project.Scripts.Tile.Tile> remaining = FindTilesOfSame(typeId, missingCount);
 
             if (remaining.Count == missingCount)
             {
@@ -545,9 +523,9 @@ namespace Tile_Explorer.Scripts.Tile
         }
 
 
-        private List<global::Tile> FindTilesOfSameFruit(TypeTileId typeTileId, int requiredCount = 3)
+        private List<Tile> FindTilesOfSame(TypeId typeId, int requiredCount = 3)
         {
-            List<global::Tile> result = new List<global::Tile>();
+            List<global::Project.Scripts.Tile.Tile> result = new List<global::Project.Scripts.Tile.Tile>();
 
             foreach (var layers in LayerTiles.Values)
             {
@@ -555,8 +533,8 @@ namespace Tile_Explorer.Scripts.Tile
                 {
                     for (int col = 0; col < layers.GetLength(1); col++)
                     {
-                        global::Tile tile = layers[row, col];
-                        if (tile != null && !tile.isCollected && tile.typeTileId == typeTileId)
+                        global::Project.Scripts.Tile.Tile tile = layers[row, col];
+                        if (tile != null && !tile.isCollected && tile.typeId == typeId)
                         {
                             result.Add(tile);
 
@@ -581,12 +559,12 @@ namespace Tile_Explorer.Scripts.Tile
             {
                 spriteDataList[i].sprite = theme.spriteTile[i];
             }
-            _spriteLookup = new Dictionary<TypeTileId, Sprite>();
+            _spritesLookup = new Dictionary<TypeId, Sprite>();
             foreach (var data in spriteDataList)
             {
-                if (!_spriteLookup.ContainsKey(data.typeTileId))
+                if (!_spritesLookup.ContainsKey(data.typeId))
                 {
-                    _spriteLookup.Add(data.typeTileId, data.sprite);
+                    _spritesLookup.Add(data.typeId, data.sprite);
                 }
             }
             foreach (var layer in LayerTiles.Values)
@@ -595,10 +573,10 @@ namespace Tile_Explorer.Scripts.Tile
                 {
                     for (int col = 0; col < layer.GetLength(1); col++)
                     {
-                        global::Tile tile = layer[row, col];
+                        global::Project.Scripts.Tile.Tile tile = layer[row, col];
                         if (tile != null)
                         {
-                            if (_spriteLookup.TryGetValue(tile.typeTileId, out Sprite newSprite))
+                            if (_spritesLookup.TryGetValue(tile.typeId, out Sprite newSprite))
                             {
                                 tile.spriteTile.sprite = newSprite;
                             }

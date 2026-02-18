@@ -1,42 +1,47 @@
 using System.Collections;
-using Tile_Explorer.Scripts.Tile;
+using Project.Scripts.Game;
+using Project.Scripts.Tile;
+using Project.Scripts.UI.Manager;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CountdownTime : MonoBehaviour
+namespace Project.Scripts.UI.Screen
 {
-    [SerializeField] private Image fillTimer;
-    [SerializeField] private TMP_Text timer;
-    [SerializeField] private RectTransform handle;
-    [SerializeField] private float handleRadius = 100f;
-    
-    public IEnumerator UpdateTimer(float duration)
+    public class CountdownTime : MonoBehaviour
     {
-        float remainingDuration = duration;
-
-        while (remainingDuration > 0)
+        [SerializeField] private Image fillTimer;
+        [SerializeField] private TMP_Text timer;
+        [SerializeField] private RectTransform handle;
+        [SerializeField] private float handleRadius = 100f;
+    
+        public IEnumerator UpdateTimer(float duration)
         {
-            remainingDuration -= Time.deltaTime;
+            float remainingDuration = duration;
 
-            float clampedTime = Mathf.Max(0, remainingDuration);
+            while (remainingDuration > 0)
+            {
+                remainingDuration -= Time.deltaTime;
 
-            timer.text = clampedTime.ToString("0");
+                float clampedTime = Mathf.Max(0, remainingDuration);
 
-            float fill = clampedTime / duration;
-            fillTimer.fillAmount = 1f - (clampedTime / duration);
+                timer.text = clampedTime.ToString("0");
 
-            float t = 1 - fill; 
-            float angle = 90f - t * 360f;
-            float x = Mathf.Cos(angle * Mathf.Deg2Rad) * handleRadius;
-            float y = Mathf.Sin(angle * Mathf.Deg2Rad) * handleRadius;
-            handle.anchoredPosition = new Vector2(x, y);
+                float fill = clampedTime / duration;
+                fillTimer.fillAmount = 1f - (clampedTime / duration);
 
-            yield return null;
-        }
+                float t = 1 - fill; 
+                float angle = 90f - t * 360f;
+                float x = Mathf.Cos(angle * Mathf.Deg2Rad) * handleRadius;
+                float y = Mathf.Sin(angle * Mathf.Deg2Rad) * handleRadius;
+                handle.anchoredPosition = new Vector2(x, y);
+
+                yield return null;
+            }
         
-        GameManager.ChangeState(GameState.PlayScreen);
-        UIManager.Instance.GetUI<ReviveScreen>().CloseDirectly();
-        TileManager.Instance.ResetTile(TileManager.Instance.currentLevel);
+            GameState.ChangeState(StateUI.PlayScreen);
+            UIManager.Instance.GetUI<ReviveScreen>().CloseDirectly();
+            TileManager.Instance.ResetTile(TileManager.Instance.currentLevel);
+        }
     }
 }

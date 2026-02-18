@@ -6,64 +6,53 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-[Serializable]
-public class TileThemeData
+namespace Project.Scripts.TileTheme
 {
-    public int id;
-    public TypeTileTheme typeTileTheme;
-    public List<Sprite> spriteTile;
-    public bool isSelected;
-}
-[CreateAssetMenu(fileName = "ThemeData", menuName = "ListThemeData")]
-public class ListTileTheme: ScriptableObject
-{
-    public List<TileThemeData> tileThemeData;
-    
-}
-public class TileThemeCellView : EnhancedScrollerCellView
-{
-    public Action<TileThemeCellView> onSelected; 
-    public int id;
-    public List<Image> imagesTile;
-    public Button select;
-    public Image outline;
-    public TileThemeData data;
-    public bool isSelected;
-
-
-    private void Start()
+    public class TileThemeCellView : EnhancedScrollerCellView
     {
-        select.onClick.AddListener(OnSelect);
-    }
+        public Action<TileThemeCellView> onSelected; 
+        public int id;
+        public List<Image> imagesTile;
+        public Button select;
+        public Image outline;
+        public TileThemeData data;
+        public bool isSelected;
 
-    private void OnSelect()
-    {
-        Debug.Log("select tile theme");
-        Debug.Log(data.id);
-        onSelected?.Invoke(this);
-    }
+
+        private void Start()
+        {
+            select.onClick.AddListener(OnSelect);
+        }
+
+        private void OnSelect()
+        {
+            Debug.Log("select tile theme");
+            Debug.Log(data.id);
+            onSelected?.Invoke(this);
+        }
 
    
 
-    public void SetData(TileThemeData data, int  tempSelectedId)
-    {
-        this.data = data;
-        for (int i = 0; i < imagesTile.Count; i++)
+        public void SetData(TileThemeData data, int  tempSelectedId)
         {
-            imagesTile[i].sprite = data.spriteTile[i];
+            this.data = data;
+            for (int i = 0; i < imagesTile.Count; i++)
+            {
+                imagesTile[i].sprite = data.spriteTile[i];
+            }
+
+            id = data.id;
+            bool outlineOn = (tempSelectedId == -1) ? data.isSelected : (data.id == tempSelectedId);
+            outline.enabled = outlineOn;    }
+    
+        public void SetSelect(bool selected)
+        {
+            outline.enabled = selected;
         }
 
-        id = data.id;
-        bool outlineOn = (tempSelectedId == -1) ? data.isSelected : (data.id == tempSelectedId);
-        outline.enabled = outlineOn;    }
-    
-    public void SetSelect(bool selected)
-    {
-        outline.enabled = selected;
-    }
-
-    public TileThemeData GetData()
-    {
-        return data;
+        public TileThemeData GetData()
+        {
+            return data;
+        }
     }
 }

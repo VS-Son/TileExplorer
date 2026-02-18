@@ -1,6 +1,8 @@
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using System;
+using Project.Scripts.UI.Manager;
+using Project.Scripts.UI.Screen;
 using UnityEngine;
 
 public class RemoveAdsCellView : EnhancedScrollerCellView,IShopCellView

@@ -1,7 +1,10 @@
 using System.Collections;
 using DG.Tweening;
+using Project.Scripts.Effect;
+using Project.Scripts.Game;
+using Project.Scripts.Sound;
 using Project.Scripts.Tile;
-using Tile_Explorer.Scripts.Tile;
+using Project.Scripts.UI.Manager;
 using TMPro;
 using UnityEngine;
 using Button = UnityEngine.UI.Button;
@@ -30,17 +33,17 @@ namespace Project.Scripts.UI.Screen
 
       [Header("Status bar")] [SerializeField]
       private int scoreQuantity = 30;
-      private int _countProgression = 0;
+      private int _countProgression = 3;
       private int _nextLevel;
    
       private void OnEnable()
       {
-         BoardTileCollector.completeLevel += CompleteLevel;
+         BoardTileCollector.CompleteLevel += CompleteLevel;
          CoinEffect.OnCompleteGoal += OnCompleteGoal;
       }
       private void OnDisable()
       {
-         BoardTileCollector.completeLevel -= CompleteLevel;
+         BoardTileCollector.CompleteLevel -= CompleteLevel;
          CoinEffect.OnCompleteGoal -= OnCompleteGoal;
 
       }
@@ -54,10 +57,10 @@ namespace Project.Scripts.UI.Screen
 
       public void OnNextLevel()
       {
-         AudioManager.Instance.PlaySfx("Button_HighPitch_Default");
+         AudioManager.Instance.PlaySfx(AudioConstants.HighPitchDefault);
          UIManager.Instance.GetUI<StatusBar>().textLevel.text = "Level" + (_nextLevel + 1);
          UIManager.Instance.GetUI<PlayScreen>().UnlockFeature(_nextLevel + 1);
-         GameManager.ChangeState(GameState.PlayScreen);
+         GameState.ChangeState(StateUI.PlayScreen);
          CloseDirectly();
          TileManager.Instance.NextLevel();
          if (_countProgression.Equals(0))
@@ -65,7 +68,7 @@ namespace Project.Scripts.UI.Screen
             slider.gameObject.SetActive(true);
             iconRewards.gameObject.SetActive(true);
             iconRewards.rectTransform.anchoredPosition = new Vector3(-225,15);
-            Sprite sprite = Resources.Load<Sprite>("Icon/Gift");
+            Sprite sprite = Resources.Load<Sprite>("Sprites/Icon/Gift");
             iconRewards.sprite = sprite;
             iconRewards.transform.localScale = new Vector3(1,1);
             iconRewards.rectTransform.sizeDelta = new Vector2(130, 130);
@@ -115,7 +118,7 @@ namespace Project.Scripts.UI.Screen
          {
             slider.gameObject.SetActive(false);
             StartCoroutine(MoveRewards());
-            slider.value = 0;
+            slider.value = 0; 
             _countProgression = 0;
             textProvence.text = $"Provence {_countProgression}/4";
          }
@@ -160,7 +163,7 @@ namespace Project.Scripts.UI.Screen
          }));
       }
 
-      private void OnCompleteGoalCoin()
+      private void OnCompleteGoal()
       {
          buttonNextLevel.gameObject.SetActive(true);
          buttonNextLevel.transform.DOScale(1, 0.6f).OnComplete(()=>
